@@ -14,7 +14,8 @@ enum class GlobalParameter
 	// Sample channel 1
 	SampleChannel1_Speed = 100,
 	SampleChannel1_Gain = 101,
-	SampleChannel1_GrainSize = 102
+	SampleChannel1_GrainSize = 102,
+	SampleChannel1_Direction = 103
 
 	// 
 };

@@ -8,6 +8,7 @@ public:
 
 public:
 	float process();
+	float getValue(void) const { return value; }
 
 public:
 	void setSampleRate(float value) {

@@ -7,7 +7,8 @@ enum class GrainSamplerParameter
 {
 	Speed,
 	Gain,
-	GrainSize
+	GrainSize,
+	Direction
 };
 
 class Phasor;
@@ -21,15 +22,22 @@ public:
 public:
 	void initialize(double sampleRate);
 	float processSample(int channel);
+	void loadFromFile(File &file);
 
 	void setParameterValue(GrainSamplerParameter parameter, float value);
-	float getParameterValue(GrainSamplerParameter parameter);
 
 private:
-	float speed;
+	void initializePhasor();
+
+private:
+	float sampleRate;
+	float rate;
 	float grainSize;
 	float gain;
+	float direction;
 
+	ScopedPointer<AudioFormatReader> reader;
+	ScopedPointer<AudioSampleBuffer> sampleBuffer;
 	ScopedPointer<Phasor> phasor;
 };
 

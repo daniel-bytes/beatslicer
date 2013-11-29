@@ -23,10 +23,17 @@ void AudioEngine::initialize(ApplicationController *controller, double sampleRat
 {
 	this->controller = controller;
 	this->grainSampler1->initialize(sampleRate);
+
+	File file("C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav");
+	
+	if (file.exists()) {
+		this->grainSampler1->loadFromFile(file);
+	}
 }
 
 void AudioEngine::stop()
 {
+	this->grainSampler1->loadFromFile(File());
 }
 
 // Parameter configuration
@@ -36,6 +43,7 @@ void AudioEngine::configureParameters(void)
 	configureParameter(GlobalParameter::SampleChannel1_Gain, (int)GrainSamplerParameter::Gain, "Sampler 1 Gain", "Gain 1", .9f, true);
 	configureParameter(GlobalParameter::SampleChannel1_Speed, (int)GrainSamplerParameter::Speed, "Sampler 1 Speed", "Speed 1", .5f, true);
 	configureParameter(GlobalParameter::SampleChannel1_GrainSize, (int)GrainSamplerParameter::GrainSize, "Sampler 1 Grains", "Grain Size 1", .5f, true);
+	configureParameter(GlobalParameter::SampleChannel1_Direction, (int)GrainSamplerParameter::Direction, "Sampler 1 Direction", "Direction 1", .5f, true);
 }
 
 Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, String name, String displayName, float initialValue, bool isPluginParameter)
@@ -105,6 +113,7 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, float value
 	case GlobalParameter::SampleChannel1_Gain:
 	case GlobalParameter::SampleChannel1_Speed:
 	case GlobalParameter::SampleChannel1_GrainSize:
+	case GlobalParameter::SampleChannel1_Direction:
 		this->grainSampler1->setParameterValue((GrainSamplerParameter)param->getLocalID(), param->getValue());
 		break;
 	}
