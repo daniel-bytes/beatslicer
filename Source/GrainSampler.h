@@ -2,6 +2,7 @@
 #define __GRAINSAMPLER_H__
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "Phasor.h"
 
 enum class GrainSamplerParameter
 {
@@ -11,8 +12,6 @@ enum class GrainSamplerParameter
 	Direction
 };
 
-class Phasor;
-
 class GrainSampler
 {
 public:
@@ -21,24 +20,23 @@ public:
 
 public:
 	void initialize(double sampleRate);
-	float processSample(int channel);
 	void loadFromFile(File &file);
+	float processSample(int channel);
 
 	void setParameterValue(GrainSamplerParameter parameter, float value);
 
 private:
-	void initializePhasor();
-
-private:
+	Phasor phasor;
 	float sampleRate;
 	float rate;
 	float grainSize;
 	float gain;
 	float direction;
-
+	
+	AudioFormatManager formatManager;
 	ScopedPointer<AudioFormatReader> reader;
 	ScopedPointer<AudioSampleBuffer> sampleBuffer;
-	ScopedPointer<Phasor> phasor;
+	//ScopedPointer<Phasor> phasor;
 };
 
 #endif //__GRAINSAMPLER_H__

@@ -35,7 +35,7 @@ public:
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
 	void processMidi(MidiBuffer& midiMessages);
-	float processSample(int channel, float value);
+	void processBlock(AudioSampleBuffer& buffer, int numInputChannels, int numOutputChannels);
 
 private:
 	void configureParameters();

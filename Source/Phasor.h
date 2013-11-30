@@ -7,22 +7,14 @@ public:
 	Phasor();
 
 public:
-	float process();
-	float getValue(void) const { return value; }
-
-public:
-	void setSampleRate(float value) {
-		sampleRate = value;
-	}
-
-	void setFrequency(float value) {
-		frequency = value;
-	}
-
+	void calculateNextPhase();
+	void initialize(float sampleRate, int bufferSize, float rate, bool direction);
+	
+	float getCurrentPhase(void) const { return value; }
 private:
-	float sampleRate;
-	float frequency;
+	int bufferSize;
 	float value;
+	float increment;
 };
 
 #endif // __PHASOR_H__

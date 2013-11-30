@@ -2,20 +2,25 @@
 #include "Utilities.h"
 
 Phasor::Phasor()
-	: sampleRate(0), frequency(0), value(0)
+	: value(0), increment(0), bufferSize(0)
 {
 }
 
-float Phasor::process()
+void Phasor::calculateNextPhase()
 {
-	float inc = (1.0f / sampleRate) * frequency;
-
-	if ((value += inc) >= 1.f) {
-		value -= 1.f;
+	if ((value += increment) >= (float)bufferSize) {
+		value = 0.f;
 	}
 	else if (value < 0.f) {
-		value += 1.f;
+		value = (float)(bufferSize - 1);
 	}
+}
 
-	return value;
+void Phasor::initialize(float sampleRate, int bufferSize, float rate, bool direction) {
+	this->bufferSize = bufferSize;
+	float maxSamples = (float)bufferSize;
+
+	float freqMult = sampleRate / maxSamples;
+	//float sampleRateCorrection = this->sampleRate / (float)this->reader->sampleRate;
+	increment = (1.f / sampleRate) * maxSamples * rate * freqMult * (direction ? 1.f : -1.f);
 }

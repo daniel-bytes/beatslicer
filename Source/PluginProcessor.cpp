@@ -70,11 +70,13 @@ const String GrainerAudioProcessor::getOutputChannelName (int channelIndex) cons
 
 bool GrainerAudioProcessor::isInputChannelStereoPair (int index) const
 {
+	(void)index;
     return true;
 }
 
 bool GrainerAudioProcessor::isOutputChannelStereoPair (int index) const
 {
+	(void)index;
     return true;
 }
 
@@ -118,20 +120,25 @@ int GrainerAudioProcessor::getCurrentProgram()
 
 void GrainerAudioProcessor::setCurrentProgram (int index)
 {
+	(void)index;
 }
 
 const String GrainerAudioProcessor::getProgramName (int index)
 {
+	(void)index;
     return String::empty;
 }
 
 void GrainerAudioProcessor::changeProgramName (int index, const String& newName)
 {
+	(void)index;
+	(void)newName;
 }
 
 //==============================================================================
 void GrainerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
+	(void)samplesPerBlock;
 	// Initialize model and wire up to controller
 	model->initialize(this->controller, sampleRate);
 	controller->setModel(model);
@@ -151,18 +158,7 @@ void GrainerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 	model->processMidi(midiMessages);
 
 	// Handle current audio frame
-    for (int channel = 0; channel < getNumInputChannels(); ++channel)
-    {
-        float* channelData = buffer.getSampleData(channel);
-
-		for (int i = 0; i < buffer.getNumSamples(); i++) {
-			float data = *(channelData + i);
-
-			data = model->processSample(channel, data);
-
-			*(channelData + i) = data;
-		}
-    }
+	model->processBlock(buffer, getNumInputChannels(), getNumOutputChannels());
 
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
@@ -191,6 +187,7 @@ AudioProcessorEditor* GrainerAudioProcessor::createEditor()
 //==============================================================================
 void GrainerAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
+	(void)destData;
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
@@ -198,6 +195,8 @@ void GrainerAudioProcessor::getStateInformation (MemoryBlock& destData)
 
 void GrainerAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
+	(void)data;
+	(void)sizeInBytes;
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
 }

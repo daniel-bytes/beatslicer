@@ -33,7 +33,8 @@ void AudioEngine::initialize(ApplicationController *controller, double sampleRat
 
 void AudioEngine::stop()
 {
-	this->grainSampler1->loadFromFile(File());
+	File f;
+	this->grainSampler1->loadFromFile(f);
 }
 
 // Parameter configuration
@@ -121,15 +122,22 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, float value
 
 void AudioEngine::processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo)
 {
+	(void)posInfo;
 }
 
 void AudioEngine::processMidi(MidiBuffer& midiMessages)
 {
+	(void)midiMessages;
 }
 
-float AudioEngine::processSample(int channel, float value)
+void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, int numOutputChannels)
 {
-	float sampledata = grainSampler1->processSample(channel);
+	(void)numInputChannels;
 
-	return sampledata * masterGain;
+	for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
+		for (int channel = 0; channel < numOutputChannels; channel++) {
+			float* channelData = buffer.getSampleData(channel);
+			*(channelData + sample) = grainSampler1->processSample(channel);
+		}
+	}
 }

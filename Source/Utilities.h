@@ -34,4 +34,17 @@ inline int frequencyToPitch(double frequency)
 	return int( 69. + log(frequency / 440.) * 17.31234 );
 }
 
+inline float linearInterpolate(float *buffer, int bufferSize, float phase)
+{
+	float indexBase = floor(phase);
+	float indexFract = phase - indexBase;
+	int leftIndex = (int)indexBase >= bufferSize ? 0 : (int)indexBase;
+	int rightIndex = (leftIndex + 1) >= bufferSize ? 0 : (leftIndex + 1);
+	float leftValue = buffer[leftIndex];
+	float rightValue = buffer[rightIndex];
+	float value = leftValue + ((rightValue - leftValue) * indexFract);
+
+	return value;
+}
+
 #endif //__UTILITIES_H__
