@@ -55,7 +55,7 @@ const String GrainerAudioProcessor::getParameterName (int index)
 
 const String GrainerAudioProcessor::getParameterText (int index)
 {
-	return model->getPluginParameterText(index);
+	return model->getPluginParameterName(index);
 }
 
 const String GrainerAudioProcessor::getInputChannelName (int channelIndex) const

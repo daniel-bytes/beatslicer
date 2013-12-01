@@ -4,10 +4,12 @@
 #include "ApplicationController.h"
 #include "GrainSampler.h"
 
+#define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav"
+
 AudioEngine::AudioEngine(void)
 	: controller(nullptr)
 {
-	grainSampler1 = new GrainSampler();
+	grainSampler = new GrainSampler();
 
 	// run after all DSP processors are created
 	configureParameters();
@@ -16,40 +18,34 @@ AudioEngine::AudioEngine(void)
 AudioEngine::~AudioEngine(void)
 {
 	controller = nullptr;
-	grainSampler1 = nullptr;
+	grainSampler = nullptr;
 }
 
 void AudioEngine::initialize(ApplicationController *controller, double sampleRate)
 {
 	this->controller = controller;
-	this->grainSampler1->initialize(sampleRate);
-
-	File file("C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav");
-	
-	if (file.exists()) {
-		this->grainSampler1->loadFromFile(file);
-	}
+	this->grainSampler->initialize(sampleRate);
 }
 
 void AudioEngine::stop()
 {
-	File f;
-	this->grainSampler1->loadFromFile(f);
 }
 
 // Parameter configuration
 void AudioEngine::configureParameters(void)
 {
-	configureParameter(GlobalParameter::SampleChannel1_Gain, (int)GrainSamplerParameter::Gain, .9f, true);
-	configureParameter(GlobalParameter::SampleChannel1_Speed, (int)GrainSamplerParameter::Speed, .5f, true);
-	configureParameter(GlobalParameter::SampleChannel1_GrainSize, (int)GrainSamplerParameter::GrainSize, .5f, true);
-	configureParameter(GlobalParameter::SampleChannel1_Direction, (int)GrainSamplerParameter::Direction, .5f, true);
+	configureParameter(GlobalParameter::GrainSampler_Gain, (int)GrainSamplerParameter::Gain, .9f, true);
+	configureParameter(GlobalParameter::GrainSampler_Speed, (int)GrainSamplerParameter::Speed, .5f, true);
+	configureParameter(GlobalParameter::GrainSampler_GrainSize, (int)GrainSamplerParameter::GrainSize, .5f, true);
+	configureParameter(GlobalParameter::GrainSampler_Direction, (int)GrainSamplerParameter::Direction, .5f, true);
+	configureParameter(GlobalParameter::GrainSampler_Pitch, (int)GrainSamplerParameter::Pitch, .5f, true);
+	configureParameter(GlobalParameter::GrainSampler_FilePath, (int)GrainSamplerParameter::FilePath, TEST_FILEPATH, false);
 }
 
-Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, float initialValue, bool isPluginParameter)
+Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter)
 {
 	String name = ParameterName(globalID);
-	Parameter *parameter = new Parameter(globalID, localID, name, name, initialValue);
+	Parameter *parameter = new Parameter(globalID, localID, name, initialValue);
 	allParameters.add(parameter);
 	parameterMap.set(globalID, parameter);
 
@@ -70,13 +66,13 @@ int AudioEngine::getNumPluginParameters(void) const
 	return pluginParameterLookups.size();
 }
 
-float AudioEngine::getPluginParameterValue(int index) const
+var AudioEngine::getPluginParameterValue(int index) const
 {
 	auto lookup = pluginParameterLookups[index];
 	return getGlobalParameterValue(lookup);
 }
 
-void AudioEngine::setPluginParameterValue(int index, float value)
+void AudioEngine::setPluginParameterValue(int index, var value)
 {
 	auto lookup = pluginParameterLookups[index];
 	setGlobalParameterValue(lookup, value);
@@ -88,31 +84,27 @@ String AudioEngine::getPluginParameterName(int index) const
 	return parameterMap[lookup]->getName();
 }
 
-String AudioEngine::getPluginParameterText(int index) const
-{
-	auto lookup = pluginParameterLookups[index];
-	return parameterMap[lookup]->getDisplayName();
-}
-
 // Global parameter handling.
 // This is where all applications parameter values are handled.
-float AudioEngine::getGlobalParameterValue(GlobalParameter parameter) const
+var AudioEngine::getGlobalParameterValue(GlobalParameter parameter) const
 {
 	return parameterMap[parameter]->getValue();
 }
 
-void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, float value)
+void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, var value)
 {
 	auto param = parameterMap[parameter];
 	param->setValue(value);
 	
 	switch(parameter)
 	{
-	case GlobalParameter::SampleChannel1_Gain:
-	case GlobalParameter::SampleChannel1_Speed:
-	case GlobalParameter::SampleChannel1_GrainSize:
-	case GlobalParameter::SampleChannel1_Direction:
-		this->grainSampler1->setParameterValue((GrainSamplerParameter)param->getLocalID(), param->getValue());
+	case GlobalParameter::GrainSampler_Gain:
+	case GlobalParameter::GrainSampler_Speed:
+	case GlobalParameter::GrainSampler_GrainSize:
+	case GlobalParameter::GrainSampler_Direction:
+	case GlobalParameter::GrainSampler_Pitch:
+	case GlobalParameter::GrainSampler_FilePath:
+		this->grainSampler->setParameterValue((GrainSamplerParameter)param->getLocalID(), param->getValue());
 		break;
 	}
 }
@@ -145,7 +137,7 @@ void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, 
 	for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
 		for (int channel = 0; channel < numOutputChannels; channel++) {
 			float* channelData = buffer.getSampleData(channel);
-			*(channelData + sample) = grainSampler1->processSample(channel);
+			*(channelData + sample) = grainSampler->processSample(channel);
 		}
 	}
 }

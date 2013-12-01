@@ -17,10 +17,11 @@ void Phasor::calculateNextPhase()
 }
 
 void Phasor::initialize(float sampleRate, int bufferSize, float rate, bool direction) {
+	this->value = 0;
 	this->bufferSize = bufferSize;
 	float maxSamples = (float)bufferSize;
 
 	float freqMult = sampleRate / maxSamples;
 	//float sampleRateCorrection = this->sampleRate / (float)this->reader->sampleRate;
-	increment = (1.f / sampleRate) * maxSamples * rate * freqMult * (direction ? 1.f : -1.f);
+	this->increment = (1.f / sampleRate) * maxSamples * rate * freqMult * (direction ? 1.f : -1.f);
 }

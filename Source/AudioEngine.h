@@ -23,14 +23,13 @@ public:
 public:
 	// Plugin parameter handling
 	virtual int getNumPluginParameters(void) const;
-	virtual float getPluginParameterValue(int index) const;
-	virtual void setPluginParameterValue(int index, float value);
+	virtual var getPluginParameterValue(int index) const;
+	virtual void setPluginParameterValue(int index, var value);
 	virtual String getPluginParameterName(int index) const;
-	virtual String getPluginParameterText(int index) const;
 
 public:
-	virtual float getGlobalParameterValue(GlobalParameter parameter) const;
-	virtual void setGlobalParameterValue(GlobalParameter parameter, float value);
+	virtual var getGlobalParameterValue(GlobalParameter parameter) const;
+	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
 	virtual const Array<Parameter*> getAllParameters(void) const;
 
 public:
@@ -40,7 +39,7 @@ public:
 
 private:
 	void configureParameters();
-	Parameter* configureParameter(GlobalParameter globalID, int localID, float initialValue, bool isPluginParameter);
+	Parameter* configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter);
 
 private:
 	// Parameter collections
@@ -53,7 +52,7 @@ private:
 
 	// Dsp elements
 	float masterGain;
-	ScopedPointer<GrainSampler> grainSampler1;
+	ScopedPointer<GrainSampler> grainSampler;
 };
 
 #endif //__AUDIOENGINE_H__

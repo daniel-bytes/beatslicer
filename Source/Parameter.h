@@ -7,12 +7,11 @@
 class Parameter
 {
 public:
-	Parameter(GlobalParameter globalID, int localID, const String &name, const String &displayName, float initialValue)
+	Parameter(GlobalParameter globalID, int localID, const String &name, var initialValue)
 	{
 		this->globalID = globalID;
 		this->localID = localID;
 		this->name = name;
-		this->displayName = displayName;
 		this->value = initialValue;
 	}
 
@@ -28,15 +27,11 @@ public:
 		return this->name;
 	}
 
-	String getDisplayName(void) const {
-		return this->displayName;
-	}
-
-	float getValue(void) const {
+	var getValue(void) const {
 		return this->value;
 	}
 
-	void setValue(float value) {
+	void setValue(var value) {
 		this->value = value;
 	}
 
@@ -44,8 +39,7 @@ private:
 	GlobalParameter globalID;
 	int localID;
 	String name;
-	String displayName;
-	float value;
+	var value;
 };
 
 #endif //__PARAMETER_H__

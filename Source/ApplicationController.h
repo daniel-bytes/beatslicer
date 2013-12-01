@@ -8,6 +8,21 @@ class ApplicationModel;
 class ApplicationView;
 class Parameter;
 
+/*
+ * This is a traditional MVC controller class.
+ * It's purpose is to facilitate data passing between the application (model) and
+ * interface (view) layers.
+ * This data is primarily Parameters, which represent both normal host-automated VST
+ * parameters as well as any internal parameters (such as note sequencer values passed
+ * from a sequencer to a synth).
+ *
+ * The core application logic will usually live in the class implementing ApplicationModel.
+ *
+ * In terms of the JUCE plugin wrapper system, the PluginProcessor class will hold an instance
+ * of the ApplicationController and a class implementing ApplicationModel, and forward most calls
+ * directly to the model class.  
+ * The PluginEditor will usually implement ApplicationView.
+ */
 class ApplicationController
 {
 public:
@@ -19,8 +34,8 @@ public:
 
 public:
 	void initializeUIParameters(const Array<Parameter*> &parameters);
-	void updateParameterUI(GlobalParameter parameter, float value);
-	void updateParameterModel(GlobalParameter parameter, float value);
+	void updateParameterUI(GlobalParameter parameter, var value);
+	void updateParameterModel(GlobalParameter parameter, var value);
 
 private:
 	ApplicationModel *model;

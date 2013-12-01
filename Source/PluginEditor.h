@@ -37,15 +37,16 @@ public:
 	void initialize(ApplicationController *controller);
 
 public:
-	virtual void buttonClicked (Button*) {};
-	virtual void buttonStateChanged (Button* button);
-	virtual void sliderValueChanged (Slider* slider);
-	virtual void setGlobalParameterValue(GlobalParameter parameter, float value);
+	virtual void buttonClicked (Button *button);
+	virtual void buttonStateChanged (Button *button);
+	virtual void sliderValueChanged (Slider *slider);
+	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
 
 private:
-	Slider gainSlider, speedSlider, grainsSlider;
+	Slider gainSlider, speedSlider, grainsSlider, pitchSlider;
 	ToggleButton directionButton;
-	Label gainLabel, speedLabel, grainsLabel;
+	TextButton selectSampleButton;
+	Label gainLabel, speedLabel, grainsLabel, pitchLabel, filePathLabel, filePathValueLabel;
 	ApplicationController *controller;
 };
 

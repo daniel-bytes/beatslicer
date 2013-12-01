@@ -9,16 +9,13 @@ enum class GlobalParameter
 {
 	Unknown = 0,
 
-	// Master
-	//Master_Gain = 1,
-
 	// Sample channel 1
-	SampleChannel1_Speed = 100,
-	SampleChannel1_Gain = 101,
-	SampleChannel1_GrainSize = 102,
-	SampleChannel1_Direction = 103
-
-	// 
+	GrainSampler_Speed = 100,
+	GrainSampler_Gain = 101,
+	GrainSampler_GrainSize = 102,
+	GrainSampler_Direction = 103,
+	GrainSampler_Pitch = 104,
+	GrainSampler_FilePath = 105
 };
 
 // Set parameter name mappings in GlobalParameters.cpp

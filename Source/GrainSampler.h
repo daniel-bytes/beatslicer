@@ -9,7 +9,9 @@ enum class GrainSamplerParameter
 	Speed,
 	Gain,
 	GrainSize,
-	Direction
+	Direction,
+	Pitch,
+	FilePath
 };
 
 class GrainSampler
@@ -20,19 +22,21 @@ public:
 
 public:
 	void initialize(double sampleRate);
-	void loadFromFile(File &file);
 	float processSample(int channel);
+	void loadFile(String filePath);
 
-	void setParameterValue(GrainSamplerParameter parameter, float value);
+	void setParameterValue(GrainSamplerParameter parameter, var value);
 
 private:
-	Phasor phasor;
+	Phasor masterPhase;
 	float sampleRate;
 	float rate;
 	float grainSize;
+	float grainRate;
 	float gain;
 	float direction;
 	
+	String filePath;
 	AudioFormatManager formatManager;
 	ScopedPointer<AudioFormatReader> reader;
 	ScopedPointer<AudioSampleBuffer> sampleBuffer;

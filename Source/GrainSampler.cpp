@@ -2,7 +2,7 @@
 #include "Utilities.h"
 
 GrainSampler::GrainSampler(void)
-	: rate(0), grainSize(0), gain(0), direction(0)
+	: rate(0), grainSize(0), gain(0), direction(0), grainRate(0)
 {
     formatManager.registerBasicFormats();
 }
@@ -29,18 +29,21 @@ float GrainSampler::processSample(int channel)
 	float *channelData = *(this->sampleBuffer->getArrayOfChannels() + channelIndex);
 
 	// get interpolated valued
-	float value = linearInterpolate(channelData, numSamples, phasor.getCurrentPhase());
+	float value = linearInterpolate(channelData, numSamples, masterPhase.getCurrentPhase());
 	//float value = channelData[(int)phasor.phase];
 
 	if (channel == 0) {
-		phasor.calculateNextPhase();
+		masterPhase.calculateNextPhase();
 	}
 
 	return value * gain;
 }
 
-void GrainSampler::loadFromFile(File &file)
+void GrainSampler::loadFile(String filePath)
 {
+	this->filePath = filePath;
+
+	File file(filePath);
 	this->sampleBuffer = nullptr;
 	this->reader = nullptr;
 
@@ -51,11 +54,11 @@ void GrainSampler::loadFromFile(File &file)
 		this->sampleBuffer = new AudioSampleBuffer(reader->numChannels, numSamples);
 		reader->read(this->sampleBuffer, 0, numSamples, 0, true, true);
 
-		phasor.initialize(sampleRate, sampleBuffer->getNumSamples(), rate, direction >= .5);
+		masterPhase.initialize(sampleRate, sampleBuffer->getNumSamples(), rate, direction >= .5);
     }
 }
 
-void GrainSampler::setParameterValue(GrainSamplerParameter parameter, float value)
+void GrainSampler::setParameterValue(GrainSamplerParameter parameter, var value)
 {
 	switch(parameter)
 	{
@@ -63,19 +66,24 @@ void GrainSampler::setParameterValue(GrainSamplerParameter parameter, float valu
 		this->gain = value;
 		break;
 	case GrainSamplerParameter::Speed:
-		this->rate = value * 2.f;
+		this->rate = (float)value * 2.f;
 		if (sampleBuffer != nullptr) {
-			phasor.initialize(sampleRate, sampleBuffer->getNumSamples(), rate, direction >= .5);
+			masterPhase.initialize(sampleRate, sampleBuffer->getNumSamples(), rate, direction >= .5);
 		}
 		break;
 	case GrainSamplerParameter::GrainSize:
 		this->grainSize = value;
 		break;
 	case GrainSamplerParameter::Direction:
-		this->direction = value < .5f ? -1.f : 1.f;
+		this->direction = (float)value < .5f ? -1.f : 1.f;
 		if (sampleBuffer != nullptr) {
-			phasor.initialize(sampleRate, sampleBuffer->getNumSamples(), rate, direction >= .5);
+			masterPhase.initialize(sampleRate, sampleBuffer->getNumSamples(), rate, direction >= .5);
 		}
+	case GrainSamplerParameter::Pitch:
+		this->grainRate = ((float)value * 4.f) - 2.f;
+		break;
+	case GrainSamplerParameter::FilePath:
+		loadFile((String)value);
 		break;
 	}
 }

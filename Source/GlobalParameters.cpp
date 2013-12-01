@@ -6,10 +6,12 @@ String ParameterName(GlobalParameter parameter)
 
 	if (parameterNames.size() == 0) {
 		ScopedLock lock(parameterNames.getLock());
-		parameterNames[GlobalParameter::SampleChannel1_Speed] = "Speed";
-		parameterNames[GlobalParameter::SampleChannel1_Gain] = "Gain";
-		parameterNames[GlobalParameter::SampleChannel1_GrainSize] = "Grains";
-		parameterNames[GlobalParameter::SampleChannel1_Direction] = "Direction";
+		parameterNames[GlobalParameter::GrainSampler_Speed] = "Speed";
+		parameterNames[GlobalParameter::GrainSampler_Gain] = "Gain";
+		parameterNames[GlobalParameter::GrainSampler_GrainSize] = "Grains";
+		parameterNames[GlobalParameter::GrainSampler_Direction] = "Direction";
+		parameterNames[GlobalParameter::GrainSampler_Pitch] = "Pitch";
+		parameterNames[GlobalParameter::GrainSampler_FilePath] = "Sample";
 	}
 
 	return parameterNames[parameter];

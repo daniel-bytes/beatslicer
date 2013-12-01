@@ -33,14 +33,14 @@ void ApplicationController::initializeUIParameters(const Array<Parameter*> &para
 	}
 }
 
-void ApplicationController::updateParameterUI(GlobalParameter parameter, float value)
+void ApplicationController::updateParameterUI(GlobalParameter parameter, var value)
 {
 	if (this->view != nullptr) {
 		this->view->setGlobalParameterValue(parameter, value);
 	}
 }
 
-void ApplicationController::updateParameterModel(GlobalParameter parameter, float value)
+void ApplicationController::updateParameterModel(GlobalParameter parameter, var value)
 {
 	if (this->model != nullptr) {
 		this->model->setGlobalParameterValue(parameter, value);
