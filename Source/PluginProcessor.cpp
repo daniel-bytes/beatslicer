@@ -13,11 +13,10 @@
 #include "AudioEngine.h"
 #include "ApplicationController.h"
 
-
 //==============================================================================
 GrainerAudioProcessor::GrainerAudioProcessor()
 {
-	model = new AudioEngine();
+	model = new AudioEngine(this);
 	controller = new ApplicationController();
 }
 
@@ -55,7 +54,7 @@ const String GrainerAudioProcessor::getParameterName (int index)
 
 const String GrainerAudioProcessor::getParameterText (int index)
 {
-	return model->getPluginParameterName(index);
+	return String(getParameter(index), 2);
 }
 
 const String GrainerAudioProcessor::getInputChannelName (int channelIndex) const
@@ -188,18 +187,22 @@ AudioProcessorEditor* GrainerAudioProcessor::createEditor()
 //==============================================================================
 void GrainerAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-	(void)destData;
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    // Create an outer XML element..
+    XmlElement xml("GrainrSettings");
+
+	controller->serializeParameters(&xml);
+
+    copyXmlToBinary(xml, destData);
 }
 
 void GrainerAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-	(void)data;
-	(void)sizeInBytes;
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+	ScopedPointer<XmlElement> xml(getXmlFromBinary (data, sizeInBytes));
+
+    if (xml != nullptr)
+	{
+		controller->deserializeParameters(xml);
+	}
 }
 
 //==============================================================================
@@ -208,3 +211,10 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new GrainerAudioProcessor();
 }
+
+/*
+AudioProcessor* JUCE_CALLTYPE createPluginFilterOfType(AudioProcessor::WrapperType)
+{
+	return new GrainerAudioProcessor();
+}
+*/

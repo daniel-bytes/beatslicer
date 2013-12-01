@@ -316,6 +316,9 @@
     <Filter Include="Source\Engine">
       <UniqueIdentifier>{5f2eddf7-56aa-44a6-88eb-67fdd135dd9d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Libs\Juce Modules\juce_audio_plugin_client\Standalone">
+      <UniqueIdentifier>{f9b3d72d-6ef4-4f46-b397-98f23a4283b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -1517,6 +1520,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\GlobalParameters.cpp">
       <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Standalone.cpp">
+      <Filter>Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_utils\juce_audio_utils.cpp">
+      <Filter>Libs\Juce Library Code</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2875,6 +2884,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Wavetable.h">
       <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\Standalone\juce_StandaloneFilterWindow.h">
+      <Filter>Libs\Juce Modules\juce_audio_plugin_client\Standalone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

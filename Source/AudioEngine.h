@@ -13,7 +13,7 @@ class AudioEngine
 	: public ApplicationModel
 {
 public:
-	AudioEngine(void);
+	AudioEngine(AudioProcessor *parent);
 	~AudioEngine(void);
 
 public:
@@ -42,10 +42,14 @@ private:
 	Parameter* configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter);
 
 private:
+	AudioProcessor *parent;
+
 	// Parameter collections
 	OwnedArray<Parameter> allParameters;
 	HashMap<GlobalParameter, Parameter*, GlobalParameterHash> parameterMap;
+	
 	Array<GlobalParameter> pluginParameterLookups;
+	HashMap<GlobalParameter, int, GlobalParameterHash> pluginParameterIdMap;
 
 	// Application controller
 	ApplicationController *controller;

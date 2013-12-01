@@ -7,12 +7,13 @@
 class Parameter
 {
 public:
-	Parameter(GlobalParameter globalID, int localID, const String &name, var initialValue)
+	Parameter(GlobalParameter globalID, int localID, const String &name, var initialValue, bool pluginParameter)
 	{
 		this->globalID = globalID;
 		this->localID = localID;
 		this->name = name;
 		this->value = initialValue;
+		this->pluginParameter = pluginParameter;
 	}
 
 	GlobalParameter getGlobalID(void) const {
@@ -35,11 +36,16 @@ public:
 		this->value = value;
 	}
 
+	bool isPluginParameter(void) const {
+		return pluginParameter;
+	}
+
 private:
 	GlobalParameter globalID;
 	int localID;
 	String name;
 	var value;
+	bool pluginParameter;
 };
 
 #endif //__PARAMETER_H__

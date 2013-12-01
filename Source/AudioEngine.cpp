@@ -6,11 +6,11 @@
 
 #define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav"
 
-AudioEngine::AudioEngine(void)
-	: controller(nullptr)
+AudioEngine::AudioEngine(AudioProcessor *parent)
+	: controller(nullptr), parent(parent)
 {
 	grainSampler = new GrainSampler();
-
+	
 	// run after all DSP processors are created
 	configureParameters();
 }
@@ -45,12 +45,13 @@ void AudioEngine::configureParameters(void)
 Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter)
 {
 	String name = ParameterName(globalID);
-	Parameter *parameter = new Parameter(globalID, localID, name, initialValue);
+	Parameter *parameter = new Parameter(globalID, localID, name, initialValue, isPluginParameter);
 	allParameters.add(parameter);
 	parameterMap.set(globalID, parameter);
 
 	if (isPluginParameter) {
 		pluginParameterLookups.add(globalID);
+		pluginParameterIdMap.set(globalID, pluginParameterLookups.size() - 1);
 	}
 
 	// Ensure that the processor handling this parameter gets the initial value
@@ -94,6 +95,15 @@ var AudioEngine::getGlobalParameterValue(GlobalParameter parameter) const
 void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, var value)
 {
 	auto param = parameterMap[parameter];
+	/*
+	if (param->isPluginParameter()) {
+		// If the host needs to handle this, we do that now.  It will eventually
+		int id = pluginParameterIdMap[parameter];
+
+		parent->setParameterNotifyingHost(id, (float)value);
+		return;
+	}
+	*/
 	param->setValue(value);
 	
 	switch(parameter)

@@ -33,9 +33,12 @@ public:
 	void setView(ApplicationView *view);
 
 public:
+	void serializeParameters(XmlElement *xml);
+	void deserializeParameters(XmlElement *xml);
 	void initializeUIParameters(const Array<Parameter*> &parameters);
 	void updateParameterUI(GlobalParameter parameter, var value);
 	void updateParameterModel(GlobalParameter parameter, var value);
+	void updateParameterModelAndUI(GlobalParameter parameter, var value);
 
 private:
 	ApplicationModel *model;
