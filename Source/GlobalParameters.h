@@ -3,13 +3,14 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 
-// All possible parameters are defined here
+// All possible parameters are defined here.  
+// These include plugin parameters AND any sort of internal automation parameter (eg: pitch controlled by a sequencer).
 enum class GlobalParameter
 {
 	Unknown = 0,
 
 	// Master
-	Master_Gain = 1,
+	//Master_Gain = 1,
 
 	// Sample channel 1
 	SampleChannel1_Speed = 100,
@@ -20,6 +21,9 @@ enum class GlobalParameter
 	// 
 };
 
+// Set parameter name mappings in GlobalParameters.cpp
+String ParameterName(GlobalParameter parameter);
+
 struct GlobalParameterHash
 {
 	 int generateHash (const GlobalParameter key, const int upperLimit) const noexcept
@@ -28,5 +32,6 @@ struct GlobalParameterHash
 		 return std::abs (iKey) % upperLimit; 
 	 }
 };
+
 
 #endif //__GLOBALPARAMETERS_H__

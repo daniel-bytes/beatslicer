@@ -22,7 +22,9 @@ class ApplicationController;
 */
 class GrainerAudioProcessorEditor  
 	: public AudioProcessorEditor,
-	  public ApplicationView
+	  public ApplicationView,
+	  public juce::Slider::Listener,
+	  public juce::Button::Listener
 {
 public:
     GrainerAudioProcessorEditor (GrainerAudioProcessor* ownerFilter);
@@ -34,7 +36,16 @@ public:
 
 	void initialize(ApplicationController *controller);
 
+public:
+	virtual void buttonClicked (Button*) {};
+	virtual void buttonStateChanged (Button* button);
+	virtual void sliderValueChanged (Slider* slider);
+	virtual void setGlobalParameterValue(GlobalParameter parameter, float value);
+
 private:
+	Slider gainSlider, speedSlider, grainsSlider;
+	ToggleButton directionButton;
+	Label gainLabel, speedLabel, grainsLabel;
 	ApplicationController *controller;
 };
 

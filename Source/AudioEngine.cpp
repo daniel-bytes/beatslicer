@@ -40,16 +40,16 @@ void AudioEngine::stop()
 // Parameter configuration
 void AudioEngine::configureParameters(void)
 {
-	configureParameter(GlobalParameter::Master_Gain, (int)GlobalParameter::Master_Gain, "Master Volume", "Master Volume", .5f, true);
-	configureParameter(GlobalParameter::SampleChannel1_Gain, (int)GrainSamplerParameter::Gain, "Sampler 1 Gain", "Gain 1", .9f, true);
-	configureParameter(GlobalParameter::SampleChannel1_Speed, (int)GrainSamplerParameter::Speed, "Sampler 1 Speed", "Speed 1", .5f, true);
-	configureParameter(GlobalParameter::SampleChannel1_GrainSize, (int)GrainSamplerParameter::GrainSize, "Sampler 1 Grains", "Grain Size 1", .5f, true);
-	configureParameter(GlobalParameter::SampleChannel1_Direction, (int)GrainSamplerParameter::Direction, "Sampler 1 Direction", "Direction 1", .5f, true);
+	configureParameter(GlobalParameter::SampleChannel1_Gain, (int)GrainSamplerParameter::Gain, .9f, true);
+	configureParameter(GlobalParameter::SampleChannel1_Speed, (int)GrainSamplerParameter::Speed, .5f, true);
+	configureParameter(GlobalParameter::SampleChannel1_GrainSize, (int)GrainSamplerParameter::GrainSize, .5f, true);
+	configureParameter(GlobalParameter::SampleChannel1_Direction, (int)GrainSamplerParameter::Direction, .5f, true);
 }
 
-Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, String name, String displayName, float initialValue, bool isPluginParameter)
+Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, float initialValue, bool isPluginParameter)
 {
-	Parameter *parameter = new Parameter((int)globalID, localID, name, displayName, initialValue);
+	String name = ParameterName(globalID);
+	Parameter *parameter = new Parameter(globalID, localID, name, name, initialValue);
 	allParameters.add(parameter);
 	parameterMap.set(globalID, parameter);
 
@@ -108,9 +108,6 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, float value
 	
 	switch(parameter)
 	{
-	case GlobalParameter::Master_Gain:
-		this->masterGain = param->getValue();
-		break;
 	case GlobalParameter::SampleChannel1_Gain:
 	case GlobalParameter::SampleChannel1_Speed:
 	case GlobalParameter::SampleChannel1_GrainSize:
@@ -118,6 +115,17 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, float value
 		this->grainSampler1->setParameterValue((GrainSamplerParameter)param->getLocalID(), param->getValue());
 		break;
 	}
+}
+
+const Array<Parameter*> AudioEngine::getAllParameters(void) const
+{
+	Array<Parameter*> parameters;
+
+	for (auto parameter : allParameters) {
+		parameters.add(parameter);
+	}
+
+	return parameters;
 }
 
 void AudioEngine::processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo)

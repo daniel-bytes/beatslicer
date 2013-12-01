@@ -6,6 +6,8 @@
 
 class ApplicationView
 {
+public:
+	virtual void setGlobalParameterValue(GlobalParameter parameter, float value) = 0;
 };
 
 #endif //__APPLICATIONVIEW_H__

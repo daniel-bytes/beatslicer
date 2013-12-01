@@ -1,8 +1,8 @@
 #include "ApplicationController.h"
-#include "../JuceLibraryCode/JuceHeader.h"
 
 #include "ApplicationModel.h"
 #include "ApplicationView.h"
+#include "Parameter.h"
 
 ApplicationController::ApplicationController()
 	: model(nullptr), view(nullptr)
@@ -21,4 +21,28 @@ void ApplicationController::setModel(ApplicationModel *model)
 void ApplicationController::setView(ApplicationView *view)
 {
 	this->view = view;
+}
+
+void ApplicationController::initializeUIParameters(const Array<Parameter*> &parameters)
+{
+	if (this->view != nullptr) {
+		for (auto parameter : parameters) {
+			jassert(parameter != nullptr);
+			updateParameterUI(parameter->getGlobalID(), parameter->getValue());
+		}
+	}
+}
+
+void ApplicationController::updateParameterUI(GlobalParameter parameter, float value)
+{
+	if (this->view != nullptr) {
+		this->view->setGlobalParameterValue(parameter, value);
+	}
+}
+
+void ApplicationController::updateParameterModel(GlobalParameter parameter, float value)
+{
+	if (this->model != nullptr) {
+		this->model->setGlobalParameterValue(parameter, value);
+	}
 }

@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Source\ApplicationController.cpp" />
     <ClCompile Include="..\..\Source\AudioEngine.cpp" />
+    <ClCompile Include="..\..\Source\GlobalParameters.cpp" />
     <ClCompile Include="..\..\Source\GrainSampler.cpp" />
     <ClCompile Include="..\..\Source\Phasor.cpp" />
     <ClCompile Include="..\..\Source\PluginProcessor.cpp" />
@@ -1710,6 +1711,7 @@
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\Source\Utilities.h" />
+    <ClInclude Include="..\..\Source\Wavetable.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\..\Code\Libs\JUCE\modules\juce_audio_basics\juce_module_info" />

@@ -1515,6 +1515,9 @@
     <ClCompile Include="..\..\Source\Utilities.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\GlobalParameters.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
@@ -2868,6 +2871,9 @@
       <Filter>Source\Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Utilities.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Wavetable.h">
       <Filter>Source\Engine</Filter>
     </ClInclude>
   </ItemGroup>

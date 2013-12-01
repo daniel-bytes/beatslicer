@@ -2,11 +2,12 @@
 #define __PARAMETER_H__
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#include "GlobalParameters.h"
 
 class Parameter
 {
 public:
-	Parameter(int globalID, int localID, const String &name, const String &displayName, float initialValue)
+	Parameter(GlobalParameter globalID, int localID, const String &name, const String &displayName, float initialValue)
 	{
 		this->globalID = globalID;
 		this->localID = localID;
@@ -15,7 +16,7 @@ public:
 		this->value = initialValue;
 	}
 
-	int getGlobalID(void) const {
+	GlobalParameter getGlobalID(void) const {
 		return this->globalID;
 	}
 
@@ -40,7 +41,7 @@ public:
 	}
 
 private:
-	int globalID;
+	GlobalParameter globalID;
 	int localID;
 	String name;
 	String displayName;

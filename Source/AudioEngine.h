@@ -31,6 +31,7 @@ public:
 public:
 	virtual float getGlobalParameterValue(GlobalParameter parameter) const;
 	virtual void setGlobalParameterValue(GlobalParameter parameter, float value);
+	virtual const Array<Parameter*> getAllParameters(void) const;
 
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
@@ -39,7 +40,7 @@ public:
 
 private:
 	void configureParameters();
-	Parameter* configureParameter(GlobalParameter globalID, int localID, String name, String displayName, float initialValue, bool isPluginParameter);
+	Parameter* configureParameter(GlobalParameter globalID, int localID, float initialValue, bool isPluginParameter);
 
 private:
 	// Parameter collections

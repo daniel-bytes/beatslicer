@@ -172,7 +172,7 @@ void GrainerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 //==============================================================================
 bool GrainerAudioProcessor::hasEditor() const
 {
-	return false;
+	return true;
 }
 
 AudioProcessorEditor* GrainerAudioProcessor::createEditor()
@@ -180,6 +180,7 @@ AudioProcessorEditor* GrainerAudioProcessor::createEditor()
     auto view = new GrainerAudioProcessorEditor(this);
 	view->initialize(this->controller);
 	this->controller->setView(view);
+	this->controller->initializeUIParameters(this->model->getAllParameters());
 
 	return view;
 }

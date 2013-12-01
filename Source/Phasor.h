@@ -11,7 +11,8 @@ public:
 	void initialize(float sampleRate, int bufferSize, float rate, bool direction);
 	
 	float getCurrentPhase(void) const { return value; }
-private:
+
+protected:
 	int bufferSize;
 	float value;
 	float increment;

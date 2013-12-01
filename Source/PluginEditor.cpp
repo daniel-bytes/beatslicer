@@ -14,14 +14,47 @@
 
 //==============================================================================
 GrainerAudioProcessorEditor::GrainerAudioProcessorEditor (GrainerAudioProcessor* ownerFilter)
-    : AudioProcessorEditor (ownerFilter), controller(nullptr)
+    : AudioProcessorEditor (ownerFilter), 
+	  controller(nullptr),
+	  gainLabel("", "Gain"),
+	  speedLabel("", "Speed"),
+	  grainsLabel("", "Grains")
 {
-    // This is where our plugin's editor size is set.
-    setSize (400, 300);
+	addAndMakeVisible(&gainSlider);
+	gainSlider.setBounds(20, 20, 100, 100);
+	gainSlider.setRange(0, 1.0);
+	gainSlider.setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
+	gainSlider.addListener(this);
+    gainLabel.attachToComponent (&gainSlider, false);
+    gainLabel.setFont (Font (11.0f));
+	
+	addAndMakeVisible(&speedSlider);
+	speedSlider.setBounds(170, 20, 100, 100);
+	speedSlider.setRange(0, 2.0);
+	speedSlider.setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
+	speedSlider.addListener(this);
+    speedLabel.attachToComponent (&speedSlider, false);
+    speedLabel.setFont (Font (11.0f));
+	
+	addAndMakeVisible(&grainsSlider);
+	grainsSlider.setBounds(320, 20, 100, 100);
+	grainsSlider.setRange(0, 1.0);
+	grainsSlider.setSliderStyle(Slider::SliderStyle::RotaryVerticalDrag);
+	grainsSlider.addListener(this);
+    grainsLabel.attachToComponent (&grainsSlider, false);
+    grainsLabel.setFont (Font (11.0f));
+	
+	addAndMakeVisible(&directionButton);
+	directionButton.setBounds(470, 20, 100, 20);
+	directionButton.setButtonText("Reverse");
+	directionButton.addListener(this);
+
+    setSize (800, 600);
 }
 
 GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor()
 {
+
 }
 
 void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
@@ -34,9 +67,43 @@ void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 void GrainerAudioProcessorEditor::paint (Graphics& g)
 {
     g.fillAll (Colours::white);
-    g.setColour (Colours::black);
-    g.setFont (15.0f);
-    g.drawFittedText ("Hello World!",
-                      0, 0, getWidth(), getHeight(),
-                      Justification::centred, 1);
+}
+
+void GrainerAudioProcessorEditor::buttonStateChanged (Button* button)
+{
+	if (button == &directionButton) {
+		controller->updateParameterModel(GlobalParameter::SampleChannel1_Direction, button->getToggleState() ? 0 : 1.f);
+	}
+}
+
+void GrainerAudioProcessorEditor::sliderValueChanged (Slider* slider)
+{
+	if (slider == &gainSlider) {
+		controller->updateParameterModel(GlobalParameter::SampleChannel1_Gain, (float)slider->getValue());
+	}
+	else if (slider == &speedSlider) {
+		controller->updateParameterModel(GlobalParameter::SampleChannel1_Speed, (float)slider->getValue() * .5f);
+	}
+	else if (slider == &grainsSlider) {
+		controller->updateParameterModel(GlobalParameter::SampleChannel1_GrainSize, (float)slider->getValue());
+	}
+}
+
+void GrainerAudioProcessorEditor::setGlobalParameterValue(GlobalParameter parameter, float value)
+{
+	switch(parameter)
+	{
+	case GlobalParameter::SampleChannel1_Gain:
+		gainSlider.setValue(value, NotificationType::dontSendNotification);
+		break;
+	case GlobalParameter::SampleChannel1_Speed:
+		speedSlider.setValue(value * 2.f, NotificationType::dontSendNotification);
+		break;
+	case GlobalParameter::SampleChannel1_GrainSize:
+		grainsSlider.setValue(value, NotificationType::dontSendNotification);
+		break;
+	case GlobalParameter::SampleChannel1_Direction:
+		directionButton.setToggleState(value < .5f, NotificationType::dontSendNotification);
+		break;
+	}
 }
