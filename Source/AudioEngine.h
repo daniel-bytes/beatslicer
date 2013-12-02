@@ -32,6 +32,8 @@ public:
 	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
 	virtual const Array<Parameter*> getAllParameters(void) const;
 
+	virtual AudioFormatManager* getAudioFormatManager(void) { return &formatManager; }
+
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
 	void processMidi(MidiBuffer& midiMessages);
@@ -42,6 +44,7 @@ private:
 	Parameter* configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter);
 
 private:
+	AudioFormatManager formatManager;
 	AudioProcessor *parent;
 
 	// Parameter collections

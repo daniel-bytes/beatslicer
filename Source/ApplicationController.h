@@ -40,6 +40,8 @@ public:
 	void updateParameterModel(GlobalParameter parameter, var value);
 	void updateParameterModelAndUI(GlobalParameter parameter, var value);
 
+	AudioFormatManager* getAudioFormatManager(void);
+
 private:
 	ApplicationModel *model;
 	ApplicationView *view;

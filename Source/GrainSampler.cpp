@@ -1,10 +1,10 @@
 #include "GrainSampler.h"
 #include "Utilities.h"
 
-GrainSampler::GrainSampler(void)
+GrainSampler::GrainSampler(AudioFormatManager *formatManager)
 	: rate(0), grainSize(0), gain(0), direction(0), grainRate(0)
 {
-    formatManager.registerBasicFormats();
+	this->formatManager = formatManager;
 }
 
 GrainSampler::~GrainSampler(void)
@@ -47,7 +47,7 @@ void GrainSampler::loadFile(String filePath)
 	this->sampleBuffer = nullptr;
 	this->reader = nullptr;
 
-    this->reader = formatManager.createReaderFor(file);
+    this->reader = formatManager->createReaderFor(file);
 	
     if (reader != nullptr) { 
 		int numSamples = (int)reader->lengthInSamples;

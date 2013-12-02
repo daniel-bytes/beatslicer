@@ -17,7 +17,7 @@ enum class GrainSamplerParameter
 class GrainSampler
 {
 public:
-	GrainSampler(void);
+	GrainSampler(AudioFormatManager *formatManager);
 	~GrainSampler(void);
 
 public:
@@ -36,8 +36,8 @@ private:
 	float gain;
 	float direction;
 	
+	AudioFormatManager *formatManager;
 	String filePath;
-	AudioFormatManager formatManager;
 	ScopedPointer<AudioFormatReader> reader;
 	ScopedPointer<AudioSampleBuffer> sampleBuffer;
 	//ScopedPointer<Phasor> phasor;

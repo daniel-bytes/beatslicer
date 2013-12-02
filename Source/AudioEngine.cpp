@@ -9,7 +9,8 @@
 AudioEngine::AudioEngine(AudioProcessor *parent)
 	: controller(nullptr), parent(parent)
 {
-	grainSampler = new GrainSampler();
+	formatManager.registerBasicFormats();
+	grainSampler = new GrainSampler(&formatManager);
 	
 	// run after all DSP processors are created
 	configureParameters();

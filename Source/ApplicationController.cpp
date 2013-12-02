@@ -32,6 +32,14 @@ void ApplicationController::setView(ApplicationView *view)
 	this->view = view;
 }
 
+AudioFormatManager* ApplicationController::getAudioFormatManager(void)
+{
+	if (this->model == nullptr) {
+		return nullptr;
+	}
+
+	return this->model->getAudioFormatManager();
+}
 
 void ApplicationController::serializeParameters(XmlElement *xml)
 {

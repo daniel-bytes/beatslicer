@@ -24,7 +24,8 @@ class GrainerAudioProcessorEditor
 	: public AudioProcessorEditor,
 	  public ApplicationView,
 	  public juce::Slider::Listener,
-	  public juce::Button::Listener
+	  public juce::Button::Listener,
+	  public juce::ChangeListener
 {
 public:
     GrainerAudioProcessorEditor (GrainerAudioProcessor* ownerFilter);
@@ -40,6 +41,8 @@ public:
 	virtual void buttonClicked (Button *button);
 	virtual void buttonStateChanged (Button *button);
 	virtual void sliderValueChanged (Slider *slider);
+	virtual void changeListenerCallback (ChangeBroadcaster* source);
+
 	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
 
 private:
@@ -48,6 +51,8 @@ private:
 	TextButton selectSampleButton;
 	Label gainLabel, speedLabel, grainsLabel, pitchLabel, filePathLabel, filePathValueLabel;
 	ApplicationController *controller;
+	AudioThumbnailCache waveformCache;
+	ScopedPointer<AudioThumbnail> waveform;
 };
 
 

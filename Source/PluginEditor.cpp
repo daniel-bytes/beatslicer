@@ -20,11 +20,12 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	  speedLabel("", "Speed"),
 	  grainsLabel("", "Grains"),
 	  pitchLabel("", "Pitch"),
-	  filePathLabel("", "Sample: ")
+	  filePathLabel("", "Sample: "),
+	  waveformCache(1)
 {
 	Font labelFont(14.f, Font::FontStyleFlags::bold);
 	Font valueFont(14.f);
-
+	
 	addAndMakeVisible(&selectSampleButton);
 	selectSampleButton.setButtonText("...");
 	selectSampleButton.setTooltip("Load a new sample");
@@ -89,12 +90,21 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 
 GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor()
 {
-
+	waveform = nullptr;
 }
 
 void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 {
 	this->controller = controller;
+
+	if (this->controller != nullptr) {
+		auto formatManager = this->controller->getAudioFormatManager();
+
+		if (formatManager != nullptr) {
+			waveform = new AudioThumbnail(1, *formatManager, waveformCache);
+			waveform->addChangeListener(this);
+		}
+	}
 }
 
 
@@ -102,6 +112,14 @@ void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 void GrainerAudioProcessorEditor::paint (Graphics &g)
 {
     g.fillAll(Colours::white);
+
+	Rectangle<int> waveformBounds(20, 200, 600, 200);
+	g.drawRect(waveformBounds);
+
+	if (waveform != nullptr) {
+		
+		waveform->drawChannel(g, waveformBounds, 0, waveform->getTotalLength(), 0, 1.0f);
+	}
 }
 
 void GrainerAudioProcessorEditor::buttonClicked (Button *button)
@@ -115,6 +133,7 @@ void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 										File::nonexistent,
 										&wildcardFilter,
 										nullptr);
+
 		FileChooserDialogBox dialogBox ("Select a sample",
 										"Select a new sample to load...",
 										browser,
@@ -154,6 +173,13 @@ void GrainerAudioProcessorEditor::sliderValueChanged (Slider* slider)
 	}
 }
 
+void GrainerAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* source)
+{
+	if (source == waveform) {
+		this->repaint();
+	}
+}
+
 void GrainerAudioProcessorEditor::setGlobalParameterValue(GlobalParameter parameter, var value)
 {
 	switch(parameter)
@@ -174,7 +200,15 @@ void GrainerAudioProcessorEditor::setGlobalParameterValue(GlobalParameter parame
 		pitchSlider.setValue(((float)value * 4.f) - 2.f, NotificationType::dontSendNotification);
 		break;
 	case GlobalParameter::GrainSampler_FilePath:
-		filePathValueLabel.setText((String)value, NotificationType::dontSendNotification);
+		{
+			File file((String)value);
+			
+			if (file.exists()) {
+				waveform->setSource(new FileInputSource(file));
+			}
+
+			filePathValueLabel.setText((String)value, NotificationType::dontSendNotification);
+		}
 		break;
 	}
 }
