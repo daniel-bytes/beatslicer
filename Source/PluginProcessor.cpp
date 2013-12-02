@@ -152,8 +152,13 @@ void GrainerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 {
 	// Handle clock & midi
     AudioPlayHead::CurrentPositionInfo posInfo;
-	this->getPlayHead()->getCurrentPosition(posInfo);
-	model->processClockMessage(posInfo);
+	auto playhead = this->getPlayHead();
+
+	if (playhead != nullptr) {
+		playhead->getCurrentPosition(posInfo);
+		model->processClockMessage(posInfo);
+	}
+
 	model->processMidi(midiMessages);
 
 	// Handle current audio frame
@@ -162,8 +167,7 @@ void GrainerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
     // In case we have more outputs than inputs, we'll clear any output
     // channels that didn't contain input data, (because these aren't
     // guaranteed to be empty - they may contain garbage).
-    for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i)
-    {
+    for (int i = getNumInputChannels(); i < getNumOutputChannels(); ++i) {
         buffer.clear (i, 0, buffer.getNumSamples());
     }
 }
@@ -211,10 +215,3 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new GrainerAudioProcessor();
 }
-
-/*
-AudioProcessor* JUCE_CALLTYPE createPluginFilterOfType(AudioProcessor::WrapperType)
-{
-	return new GrainerAudioProcessor();
-}
-*/

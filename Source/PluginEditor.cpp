@@ -106,10 +106,12 @@ void GrainerAudioProcessorEditor::paint (Graphics &g)
 
 void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 {
+	jassert(controller != nullptr);
+
 	if (button == &selectSampleButton) {
 		WildcardFileFilter wildcardFilter ("*.wav", String::empty, "WAV files");
 
-		FileBrowserComponent browser(FileBrowserComponent::canSelectFiles,
+		FileBrowserComponent browser(FileBrowserComponent::canSelectFiles | FileBrowserComponent::openMode,
 										File::nonexistent,
 										&wildcardFilter,
 										nullptr);
@@ -120,7 +122,8 @@ void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 										Colours::lightgrey);
 		if (dialogBox.show())
 		{
-			String path = browser.getSelectedFile(0).getFullPathName();
+			File file = browser.getSelectedFile(0);
+			var path = file.getFullPathName();
 			this->setGlobalParameterValue(GlobalParameter::GrainSampler_FilePath, path);
 			controller->updateParameterModel(GlobalParameter::GrainSampler_FilePath, path);
 		}
@@ -129,6 +132,8 @@ void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 
 void GrainerAudioProcessorEditor::buttonStateChanged (Button* button)
 {
+	jassert(controller != nullptr);
+
 	if (button == &directionButton) {
 		controller->updateParameterModel(GlobalParameter::GrainSampler_Direction, button->getToggleState() ? 0 : 1.f);
 	}
@@ -136,6 +141,8 @@ void GrainerAudioProcessorEditor::buttonStateChanged (Button* button)
 
 void GrainerAudioProcessorEditor::sliderValueChanged (Slider* slider)
 {
+	jassert(controller != nullptr);
+
 	if (slider == &gainSlider) {
 		controller->updateParameterModel(GlobalParameter::GrainSampler_Gain, (float)slider->getValue());
 	}
