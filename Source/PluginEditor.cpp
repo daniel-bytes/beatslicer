@@ -12,6 +12,9 @@
 #include "PluginEditor.h"
 #include "ApplicationController.h"
 
+
+Rectangle<int> waveformBounds(20, 200, 600, 200);
+
 //==============================================================================
 GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* ownerFilter)
     : AudioProcessorEditor (ownerFilter), 
@@ -90,6 +93,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 
 GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor()
 {
+	this->controller->setView(nullptr);
 	waveform = nullptr;
 }
 
@@ -113,13 +117,38 @@ void GrainerAudioProcessorEditor::paint (Graphics &g)
 {
     g.fillAll(Colours::white);
 
-	Rectangle<int> waveformBounds(20, 200, 600, 200);
 	g.drawRect(waveformBounds);
 
 	if (waveform != nullptr) {
-		
 		waveform->drawChannel(g, waveformBounds, 0, waveform->getTotalLength(), 0, 1.0f);
+		auto lineOffset = (float)waveformBounds.getX() + (waveformPosition * (float)waveformBounds.getWidth());
+		g.drawLine((float)lineOffset, (float)waveformBounds.getY(), (float)lineOffset, (float)(waveformBounds.getY() + waveformBounds.getHeight()));
 	}
+}
+
+
+void GrainerAudioProcessorEditor::mouseDown(const MouseEvent &event)
+{
+	handleWaveformPhaseClick(event);
+}
+
+void GrainerAudioProcessorEditor::mouseDrag(const MouseEvent &event)
+{
+	handleWaveformPhaseClick(event);
+}
+
+bool GrainerAudioProcessorEditor::handleWaveformPhaseClick(const MouseEvent &event)
+{
+	auto position = event.getPosition();
+	if (waveformBounds.contains(position)) {
+		auto distance = (float)position.getX() / (float)waveformBounds.getWidth();/// (float)(position.getX() - waveformBounds.getX());
+		distance = jlimit(0.f, 1.f, distance);
+		controller->updateParameterModel(GlobalParameter::GrainSampler_Phase, distance);
+
+		return true;
+	}
+
+	return false;
 }
 
 void GrainerAudioProcessorEditor::buttonClicked (Button *button)
@@ -209,6 +238,10 @@ void GrainerAudioProcessorEditor::setGlobalParameterValue(GlobalParameter parame
 
 			filePathValueLabel.setText((String)value, NotificationType::dontSendNotification);
 		}
+		break;
+	case GlobalParameter::GrainSampler_Phase:
+		waveformPosition = (float)value;
+		repaint();
 		break;
 	}
 }

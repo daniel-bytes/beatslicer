@@ -18,6 +18,7 @@ AudioEngine::AudioEngine(AudioProcessor *parent)
 
 AudioEngine::~AudioEngine(void)
 {
+	controller->setModel(nullptr);
 	controller = nullptr;
 	grainSampler = nullptr;
 }
@@ -26,10 +27,12 @@ void AudioEngine::initialize(ApplicationController *controller, double sampleRat
 {
 	this->controller = controller;
 	this->grainSampler->initialize(sampleRate);
+	this->controller->beginUITimer();
 }
 
 void AudioEngine::stop()
 {
+	this->controller->endUITimer();
 }
 
 // Parameter configuration
@@ -41,6 +44,7 @@ void AudioEngine::configureParameters(void)
 	configureParameter(GlobalParameter::GrainSampler_Direction, (int)GrainSamplerParameter::Direction, .5f, true);
 	configureParameter(GlobalParameter::GrainSampler_Pitch, (int)GrainSamplerParameter::Pitch, .5f, true);
 	configureParameter(GlobalParameter::GrainSampler_FilePath, (int)GrainSamplerParameter::FilePath, TEST_FILEPATH, false);
+	configureParameter(GlobalParameter::GrainSampler_Phase, (int)GrainSamplerParameter::Phase, 0.f, false);
 }
 
 Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter)
@@ -115,6 +119,7 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, var value)
 	case GlobalParameter::GrainSampler_Direction:
 	case GlobalParameter::GrainSampler_Pitch:
 	case GlobalParameter::GrainSampler_FilePath:
+	case GlobalParameter::GrainSampler_Phase:
 		this->grainSampler->setParameterValue((GrainSamplerParameter)param->getLocalID(), param->getValue());
 		break;
 	}
@@ -151,4 +156,13 @@ void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, 
 			*(channelData + sample) = grainSampler->processSample(channel);
 		}
 	}
+}
+
+float AudioEngine::getFractionalSamplerPhase(void) const
+{
+	if (grainSampler->getSamplerBufferSize() == 0) {
+		return 0;
+	}
+
+	return grainSampler->getSamplerPhase() / (float)grainSampler->getSamplerBufferSize();
 }

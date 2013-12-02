@@ -15,7 +15,8 @@ enum class GlobalParameter
 	GrainSampler_GrainSize = 102,
 	GrainSampler_Direction = 103,
 	GrainSampler_Pitch = 104,
-	GrainSampler_FilePath = 105
+	GrainSampler_FilePath = 105,
+	GrainSampler_Phase = 106
 };
 
 // Set parameter name mappings in GlobalParameters.cpp

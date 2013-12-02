@@ -24,6 +24,7 @@ class Parameter;
  * The PluginEditor will usually implement ApplicationView.
  */
 class ApplicationController
+	: private Timer
 {
 public:
 	ApplicationController();
@@ -31,6 +32,9 @@ public:
 
 	void setModel(ApplicationModel *model);
 	void setView(ApplicationView *view);
+
+	void beginUITimer(void) { this->startTimer(20); }
+	void endUITimer(void) { this->stopTimer(); }
 
 public:
 	void serializeParameters(XmlElement *xml);
@@ -41,6 +45,9 @@ public:
 	void updateParameterModelAndUI(GlobalParameter parameter, var value);
 
 	AudioFormatManager* getAudioFormatManager(void);
+
+private:
+	virtual void timerCallback();
 
 private:
 	ApplicationModel *model;

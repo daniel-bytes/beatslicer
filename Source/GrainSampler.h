@@ -11,7 +11,8 @@ enum class GrainSamplerParameter
 	GrainSize,
 	Direction,
 	Pitch,
-	FilePath
+	FilePath,
+	Phase
 };
 
 class GrainSampler
@@ -26,6 +27,8 @@ public:
 	void loadFile(String filePath);
 
 	void setParameterValue(GrainSamplerParameter parameter, var value);
+	float getSamplerPhase(void) const { return masterPhase.getCurrentPhase(); }
+	float getSamplerBufferSize(void) const { return (float)masterPhase.getBufferSize(); }
 
 private:
 	Phasor masterPhase;

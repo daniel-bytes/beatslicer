@@ -33,6 +33,7 @@ public:
 	virtual const Array<Parameter*> getAllParameters(void) const;
 
 	virtual AudioFormatManager* getAudioFormatManager(void) { return &formatManager; }
+	virtual float getFractionalSamplerPhase(void) const;
 
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);

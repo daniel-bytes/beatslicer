@@ -29,6 +29,7 @@ public:
 	virtual const Array<Parameter*> getAllParameters(void) const = 0;
 
 	virtual AudioFormatManager* getAudioFormatManager(void) = 0;
+	virtual float getFractionalSamplerPhase(void) const = 0;
 };
 
 #endif //__APPLICATIONMODEL_H__

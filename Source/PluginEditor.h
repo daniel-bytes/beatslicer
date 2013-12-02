@@ -45,6 +45,12 @@ public:
 
 	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
 
+	virtual void mouseDown(const MouseEvent &event);
+	virtual void mouseDrag(const MouseEvent &event);
+
+private:
+	bool handleWaveformPhaseClick(const MouseEvent &event);
+
 private:
 	Slider gainSlider, speedSlider, grainsSlider, pitchSlider;
 	ToggleButton directionButton;
@@ -53,6 +59,7 @@ private:
 	ApplicationController *controller;
 	AudioThumbnailCache waveformCache;
 	ScopedPointer<AudioThumbnail> waveform;
+	float waveformPosition;
 };
 
 

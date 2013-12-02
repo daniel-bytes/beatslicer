@@ -85,5 +85,7 @@ void GrainSampler::setParameterValue(GrainSamplerParameter parameter, var value)
 	case GrainSamplerParameter::FilePath:
 		loadFile((String)value);
 		break;
+	case GrainSamplerParameter::Phase:
+		this->masterPhase.setCurrentPhase((float)value * (float)this->masterPhase.getBufferSize());
 	}
 }

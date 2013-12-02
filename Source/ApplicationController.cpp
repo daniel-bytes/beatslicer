@@ -126,3 +126,13 @@ void ApplicationController::updateParameterModelAndUI(GlobalParameter parameter,
 	updateParameterModel(parameter, value);
 	updateParameterUI(parameter, value);
 }
+
+void ApplicationController::timerCallback()
+{
+	if (this->view == nullptr) {
+		return;
+	}
+
+	float position = this->model->getFractionalSamplerPhase();
+	updateParameterUI(GlobalParameter::GrainSampler_Phase, position);
+}
