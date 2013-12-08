@@ -16,6 +16,7 @@
 #include "ApplicationView.h"
 
 class ApplicationController;
+class SamplerWaveformControl;
 
 //==============================================================================
 /**
@@ -25,6 +26,7 @@ class GrainerAudioProcessorEditor
 	  public ApplicationView,
 	  public juce::Slider::Listener,
 	  public juce::Button::Listener,
+	  public juce::ComboBox::Listener,
 	  public juce::ChangeListener
 {
 public:
@@ -41,6 +43,7 @@ public:
 	virtual void buttonClicked (Button *button);
 	virtual void buttonStateChanged (Button *button);
 	virtual void sliderValueChanged (Slider *slider);
+	virtual void comboBoxChanged (ComboBox *comboBoxThatHasChanged);
 	virtual void changeListenerCallback (ChangeBroadcaster* source);
 
 	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
@@ -49,17 +52,13 @@ public:
 	virtual void mouseDrag(const MouseEvent &event);
 
 private:
-	bool handleWaveformPhaseClick(const MouseEvent &event);
-
-private:
-	Slider gainSlider, speedSlider, grainsSlider, pitchSlider;
+	Slider gainSlider, speedSlider, pitchSlider;
 	ToggleButton directionButton;
 	TextButton selectSampleButton;
-	Label gainLabel, speedLabel, grainsLabel, pitchLabel, filePathLabel, filePathValueLabel;
+	ComboBox numSlicesComboBox;
+	Label gainLabel, speedLabel, numSlicesLabel, pitchLabel, filePathLabel, filePathValueLabel;
 	ApplicationController *controller;
-	AudioThumbnailCache waveformCache;
-	ScopedPointer<AudioThumbnail> waveform;
-	float waveformPosition;
+	ScopedPointer<SamplerWaveformControl> waveform;
 };
 
 

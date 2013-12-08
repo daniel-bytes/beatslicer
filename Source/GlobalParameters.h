@@ -10,13 +10,14 @@ enum class GlobalParameter
 	Unknown = 0,
 
 	// Sample channel 1
-	GrainSampler_Speed = 100,
-	GrainSampler_Gain = 101,
-	GrainSampler_GrainSize = 102,
-	GrainSampler_Direction = 103,
-	GrainSampler_Pitch = 104,
-	GrainSampler_FilePath = 105,
-	GrainSampler_Phase = 106
+	Sampler_Speed = 100,
+	Sampler_Gain = 101,
+	Sampler_GrainSize = 102,
+	Sampler_Direction = 103,
+	Sampler_Pitch = 104,
+	Sampler_FilePath = 105,
+	Sampler_Phase = 106,
+	Sampler_NumSlices = 107
 };
 
 // Set parameter name mappings in GlobalParameters.cpp

@@ -37,6 +37,7 @@ public:
 	void endUITimer(void) { this->stopTimer(); }
 
 public:
+	var getGlobalParameterValue(GlobalParameter parameter) const;
 	void serializeParameters(XmlElement *xml);
 	void deserializeParameters(XmlElement *xml);
 	void initializeUIParameters(const Array<Parameter*> &parameters);
@@ -45,6 +46,7 @@ public:
 	void updateParameterModelAndUI(GlobalParameter parameter, var value);
 
 	AudioFormatManager* getAudioFormatManager(void);
+	ChangeListener* getWaveformChangeListener(void);
 
 private:
 	virtual void timerCallback();

@@ -193,7 +193,7 @@
     <ClCompile Include="..\..\Source\ApplicationController.cpp" />
     <ClCompile Include="..\..\Source\AudioEngine.cpp" />
     <ClCompile Include="..\..\Source\GlobalParameters.cpp" />
-    <ClCompile Include="..\..\Source\GrainSampler.cpp" />
+    <ClCompile Include="..\..\Source\Sampler.cpp" />
     <ClCompile Include="..\..\Source\Phasor.cpp" />
     <ClCompile Include="..\..\Source\PluginProcessor.cpp" />
     <ClCompile Include="..\..\Source\PluginEditor.cpp" />
@@ -1275,6 +1275,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_gui_extra\juce_gui_extra.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_opengl\juce_opengl.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_video\juce_video.cpp" />
+    <ClCompile Include="..\..\Source\SamplerWaveformControl.cpp" />
     <ClCompile Include="..\..\Source\StandaloneApplication.cpp" />
     <ClCompile Include="..\..\Source\Utilities.cpp" />
   </ItemGroup>
@@ -1295,7 +1296,7 @@
     <ClInclude Include="..\..\Source\ApplicationView.h" />
     <ClInclude Include="..\..\Source\AudioEngine.h" />
     <ClInclude Include="..\..\Source\GlobalParameters.h" />
-    <ClInclude Include="..\..\Source\GrainSampler.h" />
+    <ClInclude Include="..\..\Source\Sampler.h" />
     <ClInclude Include="..\..\Source\Parameter.h" />
     <ClInclude Include="..\..\Source\Phasor.h" />
     <ClInclude Include="..\..\Source\PluginProcessor.h" />
@@ -1732,6 +1733,7 @@
     <ClInclude Include="..\..\..\..\..\..\..\Code\Libs\JUCE\modules\juce_video\juce_video.h" />
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h" />
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
+    <ClInclude Include="..\..\Source\SamplerWaveformControl.h" />
     <ClInclude Include="..\..\Source\StandaloneApplicationWindow.h" />
     <ClInclude Include="..\..\Source\Utilities.h" />
     <ClInclude Include="..\..\Source\Wavetable.h" />

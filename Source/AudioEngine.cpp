@@ -2,15 +2,16 @@
 #include "Parameter.h"
 
 #include "ApplicationController.h"
-#include "GrainSampler.h"
+#include "Sampler.h"
 
 #define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav"
 
 AudioEngine::AudioEngine(AudioProcessor *parent)
 	: controller(nullptr), parent(parent)
 {
-	formatManager.registerBasicFormats();
-	grainSampler = new GrainSampler(&formatManager);
+	formatManager = new AudioFormatManager();
+	formatManager->registerBasicFormats();
+	sampler = new Sampler();
 	
 	// run after all DSP processors are created
 	configureParameters();
@@ -18,15 +19,17 @@ AudioEngine::AudioEngine(AudioProcessor *parent)
 
 AudioEngine::~AudioEngine(void)
 {
+	formatManager->clearFormats();
 	controller->setModel(nullptr);
 	controller = nullptr;
-	grainSampler = nullptr;
+	sampler = nullptr;
+	formatManager = nullptr;
 }
 
 void AudioEngine::initialize(ApplicationController *controller, double sampleRate)
 {
 	this->controller = controller;
-	this->grainSampler->initialize(sampleRate);
+	this->sampler->initialize(sampleRate);
 	this->controller->beginUITimer();
 }
 
@@ -38,13 +41,14 @@ void AudioEngine::stop()
 // Parameter configuration
 void AudioEngine::configureParameters(void)
 {
-	configureParameter(GlobalParameter::GrainSampler_Gain, (int)GrainSamplerParameter::Gain, .9f, true);
-	configureParameter(GlobalParameter::GrainSampler_Speed, (int)GrainSamplerParameter::Speed, .5f, true);
-	configureParameter(GlobalParameter::GrainSampler_GrainSize, (int)GrainSamplerParameter::GrainSize, .5f, true);
-	configureParameter(GlobalParameter::GrainSampler_Direction, (int)GrainSamplerParameter::Direction, .5f, true);
-	configureParameter(GlobalParameter::GrainSampler_Pitch, (int)GrainSamplerParameter::Pitch, .5f, true);
-	configureParameter(GlobalParameter::GrainSampler_FilePath, (int)GrainSamplerParameter::FilePath, TEST_FILEPATH, false);
-	configureParameter(GlobalParameter::GrainSampler_Phase, (int)GrainSamplerParameter::Phase, 0.f, false);
+	configureParameter(GlobalParameter::Sampler_Gain, (int)SamplerParameter::Gain, .9f, true);
+	configureParameter(GlobalParameter::Sampler_Speed, (int)SamplerParameter::Speed, .5f, true);
+	configureParameter(GlobalParameter::Sampler_GrainSize, (int)SamplerParameter::GrainSize, .5f, true);
+	configureParameter(GlobalParameter::Sampler_Direction, (int)SamplerParameter::Direction, .5f, true);
+	configureParameter(GlobalParameter::Sampler_Pitch, (int)SamplerParameter::Pitch, .5f, true);
+	configureParameter(GlobalParameter::Sampler_FilePath, (int)SamplerParameter::FilePath, TEST_FILEPATH, false);
+	configureParameter(GlobalParameter::Sampler_Phase, (int)SamplerParameter::Phase, 0.f, false);
+	configureParameter(GlobalParameter::Sampler_NumSlices, (int)GlobalParameter::Sampler_NumSlices, 16, false);
 }
 
 Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter)
@@ -113,14 +117,16 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, var value)
 	
 	switch(parameter)
 	{
-	case GlobalParameter::GrainSampler_Gain:
-	case GlobalParameter::GrainSampler_Speed:
-	case GlobalParameter::GrainSampler_GrainSize:
-	case GlobalParameter::GrainSampler_Direction:
-	case GlobalParameter::GrainSampler_Pitch:
-	case GlobalParameter::GrainSampler_FilePath:
-	case GlobalParameter::GrainSampler_Phase:
-		this->grainSampler->setParameterValue((GrainSamplerParameter)param->getLocalID(), param->getValue());
+	case GlobalParameter::Sampler_Gain:
+	case GlobalParameter::Sampler_Speed:
+	case GlobalParameter::Sampler_GrainSize:
+	case GlobalParameter::Sampler_Direction:
+	case GlobalParameter::Sampler_Pitch:
+	case GlobalParameter::Sampler_Phase:
+		this->sampler->setParameterValue((SamplerParameter)param->getLocalID(), param->getValue());
+		break;
+	case GlobalParameter::Sampler_FilePath:
+		this->sampler->loadFile(this->formatManager, (String)value);
 		break;
 	}
 }
@@ -153,16 +159,16 @@ void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, 
 	for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
 		for (int channel = 0; channel < numOutputChannels; channel++) {
 			float* channelData = buffer.getSampleData(channel);
-			*(channelData + sample) = grainSampler->processSample(channel);
+			*(channelData + sample) = sampler->processSample(channel);
 		}
 	}
 }
 
 float AudioEngine::getFractionalSamplerPhase(void) const
 {
-	if (grainSampler->getSamplerBufferSize() == 0) {
+	if (sampler->getSamplerBufferSize() == 0) {
 		return 0;
 	}
 
-	return grainSampler->getSamplerPhase() / (float)grainSampler->getSamplerBufferSize();
+	return sampler->getSamplerPhase() / (float)sampler->getSamplerBufferSize();
 }

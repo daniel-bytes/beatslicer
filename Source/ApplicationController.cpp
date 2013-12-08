@@ -32,6 +32,12 @@ void ApplicationController::setView(ApplicationView *view)
 	this->view = view;
 }
 
+var ApplicationController::getGlobalParameterValue(GlobalParameter parameter) const
+{
+	jassert(model != nullptr);
+	return this->model->getGlobalParameterValue(parameter);
+}
+
 AudioFormatManager* ApplicationController::getAudioFormatManager(void)
 {
 	if (this->model == nullptr) {
@@ -39,6 +45,16 @@ AudioFormatManager* ApplicationController::getAudioFormatManager(void)
 	}
 
 	return this->model->getAudioFormatManager();
+}
+
+
+ChangeListener* ApplicationController::getWaveformChangeListener(void)
+{
+	if (view == nullptr) {
+		return nullptr;
+	}
+
+	return (ChangeListener*)view;
 }
 
 void ApplicationController::serializeParameters(XmlElement *xml)
@@ -134,5 +150,5 @@ void ApplicationController::timerCallback()
 	}
 
 	float position = this->model->getFractionalSamplerPhase();
-	updateParameterUI(GlobalParameter::GrainSampler_Phase, position);
+	updateParameterUI(GlobalParameter::Sampler_Phase, position);
 }

@@ -7,7 +7,7 @@
 
 class Parameter;
 class ApplicationController;
-class GrainSampler;
+class Sampler;
 
 class AudioEngine
 	: public ApplicationModel
@@ -32,7 +32,7 @@ public:
 	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
 	virtual const Array<Parameter*> getAllParameters(void) const;
 
-	virtual AudioFormatManager* getAudioFormatManager(void) { return &formatManager; }
+	virtual AudioFormatManager* getAudioFormatManager(void) { return formatManager; }
 	virtual float getFractionalSamplerPhase(void) const;
 
 public:
@@ -45,7 +45,7 @@ private:
 	Parameter* configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter);
 
 private:
-	AudioFormatManager formatManager;
+	ScopedPointer<AudioFormatManager> formatManager;
 	AudioProcessor *parent;
 
 	// Parameter collections
@@ -60,7 +60,7 @@ private:
 
 	// Dsp elements
 	float masterGain;
-	ScopedPointer<GrainSampler> grainSampler;
+	ScopedPointer<Sampler> sampler;
 };
 
 #endif //__AUDIOENGINE_H__
