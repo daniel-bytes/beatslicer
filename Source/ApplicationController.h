@@ -1,7 +1,8 @@
 #ifndef __APPLICATIONCONTROLLER_H__
 #define __APPLICATIONCONTROLLER_H__
 
-#include "GlobalParameters.h"
+#include <functional>
+#include "ParameterID.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 
 class ApplicationModel;
@@ -27,33 +28,40 @@ class ApplicationController
 	: private Timer
 {
 public:
-	ApplicationController();
+	ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<ApplicationView*()> viewFetch);
 	~ApplicationController();
-
-	void setModel(ApplicationModel *model);
-	void setView(ApplicationView *view);
 
 	void beginUITimer(void) { this->startTimer(20); }
 	void endUITimer(void) { this->stopTimer(); }
 
 public:
-	var getGlobalParameterValue(GlobalParameter parameter) const;
+	virtual const Array<Parameter*> getAllParameters(void) const;
+	var getParameterValue(ParameterID parameter) const;
 	void serializeParameters(XmlElement *xml);
 	void deserializeParameters(XmlElement *xml);
-	void initializeUIParameters(const Array<Parameter*> &parameters);
-	void updateParameterUI(GlobalParameter parameter, var value);
-	void updateParameterModel(GlobalParameter parameter, var value);
-	void updateParameterModelAndUI(GlobalParameter parameter, var value);
+	void updateParameterUI(ParameterID parameter, var value);
+	void updateParameterModel(ParameterID parameter, var value);
+	void updateParameterModelAndUI(ParameterID parameter, var value);
 
 	AudioFormatManager* getAudioFormatManager(void);
 	ChangeListener* getWaveformChangeListener(void);
+
+	bool sequencerIsPlaying(void) const { return isPlaying; }
+	double getSequencerPosition(void) const { return playbackPosition; }
+
+	void setSequencerParameters(bool isPlaying, double position) {
+		this->isPlaying = isPlaying;
+		this->playbackPosition = position;
+	}
 
 private:
 	virtual void timerCallback();
 
 private:
-	ApplicationModel *model;
-	ApplicationView *view;
+	std::function<ApplicationModel*()> getModel;
+	std::function<ApplicationView*()> getView;
+	bool isPlaying;
+	double playbackPosition;
 };
 
 #endif //__APPLICATIONCONTROLLER_H__

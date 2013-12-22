@@ -3,15 +3,19 @@
 
 #include "ApplicationController.h"
 #include "Sampler.h"
+#include "Phasor.h"
+#include "ClockPhasor.h"
 
 #define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav"
 
-AudioEngine::AudioEngine(AudioProcessor *parent)
-	: controller(nullptr), parent(parent)
+AudioEngine::AudioEngine()
+	: controller(nullptr)
 {
 	formatManager = new AudioFormatManager();
 	formatManager->registerBasicFormats();
 	sampler = new Sampler();
+	phasor = new Phasor();
+	clockPhasor = new ClockPhasor();
 	
 	// run after all DSP processors are created
 	configureParameters();
@@ -20,17 +24,19 @@ AudioEngine::AudioEngine(AudioProcessor *parent)
 AudioEngine::~AudioEngine(void)
 {
 	formatManager->clearFormats();
-	controller->setModel(nullptr);
 	controller = nullptr;
+	clockPhasor = nullptr;
+	phasor = nullptr;
 	sampler = nullptr;
 	formatManager = nullptr;
 }
 
 void AudioEngine::initialize(ApplicationController *controller, double sampleRate)
 {
+	this->sampleRate = sampleRate;
 	this->controller = controller;
-	this->sampler->initialize(sampleRate);
-	this->controller->beginUITimer();
+	this->sampler->setSampleRate(sampleRate);
+	this->phasor->setSampleRate(sampleRate);
 }
 
 void AudioEngine::stop()
@@ -41,30 +47,44 @@ void AudioEngine::stop()
 // Parameter configuration
 void AudioEngine::configureParameters(void)
 {
-	configureParameter(GlobalParameter::Sampler_Gain, (int)SamplerParameter::Gain, .9f, true);
-	configureParameter(GlobalParameter::Sampler_Speed, (int)SamplerParameter::Speed, .5f, true);
-	configureParameter(GlobalParameter::Sampler_GrainSize, (int)SamplerParameter::GrainSize, .5f, true);
-	configureParameter(GlobalParameter::Sampler_Direction, (int)SamplerParameter::Direction, .5f, true);
-	configureParameter(GlobalParameter::Sampler_Pitch, (int)SamplerParameter::Pitch, .5f, true);
-	configureParameter(GlobalParameter::Sampler_FilePath, (int)SamplerParameter::FilePath, TEST_FILEPATH, false);
-	configureParameter(GlobalParameter::Sampler_Phase, (int)SamplerParameter::Phase, 0.f, false);
-	configureParameter(GlobalParameter::Sampler_NumSlices, (int)GlobalParameter::Sampler_NumSlices, 16, false);
+	configurePluginParameter(ParameterID::Sampler_Gain, "Gain", .9f, 0.f, 1.f);
+	configurePluginParameter(ParameterID::Sampler_Speed, "Speed", 1.f, 0.f, 2.f);
+	configurePluginParameter(ParameterID::Sampler_GrainSize, "Grain", .5f, 0.f, 1.f);
+	configurePluginParameter(ParameterID::Sampler_Direction, "Direction", true, 0.f, 1.0f);
+	configurePluginParameter(ParameterID::Sampler_Pitch, "Pitch", 0.f, -24.f, 24.f);
+	configureStandardParameter(ParameterID::Sampler_FilePath, "File Path", TEST_FILEPATH);
+	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
+	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
+	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 4);
+
+	// just to show test/debug values
+	configureStandardParameter(ParameterID::TEST, "Test 1",  0.0f);
+	configureStandardParameter(ParameterID::TEST1, "Test 2", 0.0f);
 }
 
-Parameter* AudioEngine::configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter)
+Parameter* AudioEngine::configureStandardParameter(ParameterID id, String name, var initialValue)
 {
-	String name = ParameterName(globalID);
-	Parameter *parameter = new Parameter(globalID, localID, name, initialValue, isPluginParameter);
+	Parameter *parameter = new Parameter(id, name, initialValue);
 	allParameters.add(parameter);
-	parameterMap.set(globalID, parameter);
-
-	if (isPluginParameter) {
-		pluginParameterLookups.add(globalID);
-		pluginParameterIdMap.set(globalID, pluginParameterLookups.size() - 1);
-	}
+	parameterMap.set(id, parameter);
 
 	// Ensure that the processor handling this parameter gets the initial value
-	setGlobalParameterValue(globalID, initialValue);
+	setParameterValue(id, initialValue);
+
+	return parameter;
+}
+
+Parameter* AudioEngine::configurePluginParameter(ParameterID id, String name, var initialValue, float minValue, float maxValue)
+{
+	PluginParameter *parameter = new PluginParameter(id, name, initialValue, minValue, maxValue);
+	allParameters.add(parameter);
+	parameterMap.set(id, parameter);
+
+	pluginParameterLookups.add(id);
+	pluginParameterIdMap.set(id, pluginParameterLookups.size() - 1);
+
+	// Ensure that the processor handling this parameter gets the initial value
+	setParameterValue(id, initialValue);
 
 	return parameter;
 }
@@ -76,32 +96,34 @@ int AudioEngine::getNumPluginParameters(void) const
 	return pluginParameterLookups.size();
 }
 
-var AudioEngine::getPluginParameterValue(int index) const
+float AudioEngine::getPluginParameterValue(int index) const
 {
-	auto lookup = pluginParameterLookups[index];
-	return getGlobalParameterValue(lookup);
+	ParameterID lookup = pluginParameterLookups[index];
+	PluginParameter *parameter = static_cast<PluginParameter*>(parameterMap[lookup]);
+	return parameter->getNormalizedValue();
 }
 
-void AudioEngine::setPluginParameterValue(int index, var value)
+void AudioEngine::setPluginParameterValue(int index, float value)
 {
-	auto lookup = pluginParameterLookups[index];
-	setGlobalParameterValue(lookup, value);
+	ParameterID lookup = pluginParameterLookups[index];
+	PluginParameter *parameter = static_cast<PluginParameter*>(parameterMap[lookup]);
+	parameter->setNormalizedValue(value);
 }
 
 String AudioEngine::getPluginParameterName(int index) const
 {
-	auto lookup = pluginParameterLookups[index];
+	ParameterID lookup = pluginParameterLookups[index];
 	return parameterMap[lookup]->getName();
 }
 
 // Global parameter handling.
 // This is where all applications parameter values are handled.
-var AudioEngine::getGlobalParameterValue(GlobalParameter parameter) const
+var AudioEngine::getParameterValue(ParameterID parameter) const
 {
 	return parameterMap[parameter]->getValue();
 }
 
-void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, var value)
+void AudioEngine::setParameterValue(ParameterID parameter, var value)
 {
 	auto param = parameterMap[parameter];
 	/*
@@ -117,16 +139,30 @@ void AudioEngine::setGlobalParameterValue(GlobalParameter parameter, var value)
 	
 	switch(parameter)
 	{
-	case GlobalParameter::Sampler_Gain:
-	case GlobalParameter::Sampler_Speed:
-	case GlobalParameter::Sampler_GrainSize:
-	case GlobalParameter::Sampler_Direction:
-	case GlobalParameter::Sampler_Pitch:
-	case GlobalParameter::Sampler_Phase:
-		this->sampler->setParameterValue((SamplerParameter)param->getLocalID(), param->getValue());
+	case ParameterID::Sampler_Gain:
+		this->sampler->setGain((float)value);
 		break;
-	case GlobalParameter::Sampler_FilePath:
+	case ParameterID::Sampler_Speed:
+		this->phasor->setPlaybackRate(jlimit(.01f, 20.f, (float)value));
+		break;
+	case ParameterID::Sampler_GrainSize:
+		this->sampler->setGrainSize((float)value);
+		break;
+	case ParameterID::Sampler_Direction:
+		this->phasor->setDirection((bool)value);
+		break;
+	case ParameterID::Sampler_Pitch:
+		this->sampler->setPitch((float)value);
+		break;
+	case ParameterID::Sampler_FilePath:
 		this->sampler->loadFile(this->formatManager, (String)value);
+		this->phasor->setBufferSize(sampler->getSamplerBufferSize(), sampler->getSamplerBufferSampleRate());
+		break;
+	case ParameterID::Sampler_Phase:
+		phasor->setCurrentPhase((float)param->getValue() * sampler->getSamplerBufferSize());
+		break;
+	case ParameterID::Sampler_NumBars:
+		clockPhasor->setNumBars((int)value);
 		break;
 	}
 }
@@ -145,6 +181,16 @@ const Array<Parameter*> AudioEngine::getAllParameters(void) const
 void AudioEngine::processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo)
 {
 	(void)posInfo;
+
+	this->controller->setSequencerParameters(posInfo.isPlaying, posInfo.ppqPosition);
+
+	if (posInfo.isPlaying) {
+		this->clockPhasor->setPhase(posInfo.ppqPosition);
+
+		if (this->clockPhasor->getCurrentPhase() == 0) {
+			this->phasor->setCurrentPhase(0);
+		}
+	}
 }
 
 void AudioEngine::processMidi(MidiBuffer& midiMessages)
@@ -157,18 +203,14 @@ void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, 
 	(void)numInputChannels;
 
 	for (int sample = 0; sample < buffer.getNumSamples(); sample++) {
+		float phase = phasor->getCurrentPhase();
+
 		for (int channel = 0; channel < numOutputChannels; channel++) {
 			float* channelData = buffer.getSampleData(channel);
-			*(channelData + sample) = sampler->processSample(channel);
+			float data = sampler->processSample(channel, phase);
+			*(channelData + sample) = data;
 		}
-	}
-}
 
-float AudioEngine::getFractionalSamplerPhase(void) const
-{
-	if (sampler->getSamplerBufferSize() == 0) {
-		return 0;
+		phasor->calculateNextPhase();
 	}
-
-	return sampler->getSamplerPhase() / (float)sampler->getSamplerBufferSize();
 }

@@ -15,6 +15,8 @@
 
 class AudioEngine;
 class ApplicationController;
+class ApplicationModel;
+class ApplicationView;
 
 //==============================================================================
 /**
@@ -72,6 +74,9 @@ public:
 private:
 	ScopedPointer<ApplicationController> controller;
 	ScopedPointer<AudioEngine> model;
+
+	ApplicationModel* getModel(void);
+	ApplicationView* getView(void);
 
 private:
     //==============================================================================

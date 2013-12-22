@@ -31,7 +31,7 @@ public:
 
 private:
 	ApplicationController *controller;
-	AudioThumbnailCache waveformCache;
+	ScopedPointer<AudioThumbnailCache> waveformCache;
 	ScopedPointer<AudioThumbnail> waveform;
 	float waveformPosition;
 	int numSlices;

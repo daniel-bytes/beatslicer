@@ -1428,9 +1428,6 @@
     <ClCompile Include="..\..\Source\Utilities.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\GlobalParameters.cpp">
-      <Filter>Source\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_utils\juce_audio_utils.cpp">
       <Filter>Libs\Juce Library Code</Filter>
     </ClCompile>
@@ -1454,6 +1451,12 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\SamplerWaveformControl.cpp">
       <Filter>Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ClockPhasor.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\ParameterID.cpp">
+      <Filter>Source\Engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2765,9 +2768,6 @@
     <ClInclude Include="..\..\Source\AudioEngine.h">
       <Filter>Source\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\GlobalParameters.h">
-      <Filter>Source\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\ApplicationView.h">
       <Filter>Source\Engine</Filter>
     </ClInclude>
@@ -2827,6 +2827,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\SamplerWaveformControl.h">
       <Filter>Source\GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ClockPhasor.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\ParameterID.h">
+      <Filter>Source\Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

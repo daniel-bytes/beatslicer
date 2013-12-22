@@ -46,7 +46,7 @@ public:
 	virtual void comboBoxChanged (ComboBox *comboBoxThatHasChanged);
 	virtual void changeListenerCallback (ChangeBroadcaster* source);
 
-	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
+	virtual void setParameterValue(ParameterID parameter, var value);
 
 	virtual void mouseDown(const MouseEvent &event);
 	virtual void mouseDrag(const MouseEvent &event);
@@ -57,6 +57,7 @@ private:
 	TextButton selectSampleButton;
 	ComboBox numSlicesComboBox;
 	Label gainLabel, speedLabel, numSlicesLabel, pitchLabel, filePathLabel, filePathValueLabel;
+	Label testLabel, test2Label;
 	ApplicationController *controller;
 	ScopedPointer<SamplerWaveformControl> waveform;
 };

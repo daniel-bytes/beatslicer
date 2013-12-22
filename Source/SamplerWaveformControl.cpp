@@ -3,8 +3,7 @@
 
 SamplerWaveformControl::SamplerWaveformControl(int numSlices)
 	: Component(),
-	  numSlices(numSlices),
-	  waveformCache(1)
+	  numSlices(numSlices)
 {
 }
 
@@ -12,6 +11,7 @@ SamplerWaveformControl::~SamplerWaveformControl(void)
 {
 	waveform = nullptr;
 	controller = nullptr;
+	waveformCache = nullptr;
 }
 
 void SamplerWaveformControl::setNumSlices(int numSlices)
@@ -43,7 +43,8 @@ void SamplerWaveformControl::initialize(ApplicationController *controller)
 	auto formatManager = controller->getAudioFormatManager();
 
 	if (formatManager != nullptr) {
-		waveform = new AudioThumbnail(1, *formatManager, waveformCache);
+		waveformCache = new AudioThumbnailCache(1);
+		waveform = new AudioThumbnail(1, *formatManager, *waveformCache);
 
 		auto waveformListener = controller->getWaveformChangeListener();
 
@@ -73,11 +74,15 @@ void SamplerWaveformControl::paint(Graphics &g)
 	auto lineOffset = waveformPosition * (float)waveformBounds.getWidth();
 	g.drawLine((float)lineOffset, (float)waveformBounds.getY(), (float)lineOffset, (float)(waveformBounds.getY() + waveformBounds.getHeight()));
 		
-	g.setColour(Colours::grey);
-	for (int i = 1; i <= numSlices; i++) {
+	//int sliceNumber = (int)(waveformPosition * (float)numSlices);
+	for (int i = 1; i < numSlices; i++) {
+		g.setColour(Colours::grey);
 		int offset = (waveformBounds.getWidth() / numSlices) * i;
 		g.drawLine((float)offset, (float)waveformBounds.getY(), (float)offset, (float)(waveformBounds.getY() + waveformBounds.getHeight()));
+
+		//if (
 	}
+
 }
 
 void SamplerWaveformControl::mouseDown(const MouseEvent &event)
@@ -87,7 +92,7 @@ void SamplerWaveformControl::mouseDown(const MouseEvent &event)
 	float distance = jlimit(0.f, .9999f, (float)position.getX() / (float)this->getWidth());
 	float sliceNumber = distance * (float)numSlices;
 	distance = floor(sliceNumber) / (float)numSlices;
-	controller->updateParameterModel(GlobalParameter::Sampler_Phase, distance);
+	controller->updateParameterModel(ParameterID::Sampler_Phase, distance);
 
 	this->repaint();
 }

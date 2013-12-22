@@ -192,7 +192,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_utils\juce_audio_utils.cpp" />
     <ClCompile Include="..\..\Source\ApplicationController.cpp" />
     <ClCompile Include="..\..\Source\AudioEngine.cpp" />
-    <ClCompile Include="..\..\Source\GlobalParameters.cpp" />
+    <ClCompile Include="..\..\Source\ClockPhasor.cpp" />
+    <ClCompile Include="..\..\Source\ParameterID.cpp" />
     <ClCompile Include="..\..\Source\Sampler.cpp" />
     <ClCompile Include="..\..\Source\Phasor.cpp" />
     <ClCompile Include="..\..\Source\PluginProcessor.cpp" />
@@ -1295,7 +1296,8 @@
     <ClInclude Include="..\..\Source\ApplicationModel.h" />
     <ClInclude Include="..\..\Source\ApplicationView.h" />
     <ClInclude Include="..\..\Source\AudioEngine.h" />
-    <ClInclude Include="..\..\Source\GlobalParameters.h" />
+    <ClInclude Include="..\..\Source\ClockPhasor.h" />
+    <ClInclude Include="..\..\Source\ParameterID.h" />
     <ClInclude Include="..\..\Source\Sampler.h" />
     <ClInclude Include="..\..\Source\Parameter.h" />
     <ClInclude Include="..\..\Source\Phasor.h" />

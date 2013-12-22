@@ -4,22 +4,15 @@
 #include <cmath>
 
 template <typename T>
-inline T clip(T value, T min, T max)
-{
-	if (value > max) {
-		return max;
-	}
-	else if (value < min) {
-		return min;
-	}
-
-	return value;
-}
-
-template <typename T>
 inline T scale(T value, T min, T max)
 {
 	return (value * (max - min)) + min;
+}
+
+template <typename T>
+inline T normalize(T value, T min, T max)
+{
+	return (value - min) / (max - min);
 }
 
 inline double pitchToFrequency(int note)

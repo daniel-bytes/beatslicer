@@ -1,7 +1,7 @@
 #ifndef __APPLICATIONVIEW_H__
 #define __APPLICATIONVIEW_H__
 
-#include "GlobalParameters.h"
+#include "ParameterID.h"
 
 /*
  * ApplicationView defines an interface for a presentation layer.
@@ -15,7 +15,7 @@
 class ApplicationView
 {
 public:
-	virtual void setGlobalParameterValue(GlobalParameter parameter, var value) = 0;
+	virtual void setParameterValue(ParameterID parameter, var value) = 0;
 };
 
 #endif //__APPLICATIONVIEW_H__

@@ -2,7 +2,7 @@
 #define __APPLICATIONMODEL_H__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "GlobalParameters.h"
+#include "ParameterID.h"
 
 class Parameter;
 
@@ -19,17 +19,16 @@ class ApplicationModel
 public:
 	// Plugin parameter handlers
 	virtual int getNumPluginParameters(void) const = 0;
-	virtual var getPluginParameterValue(int index) const = 0;
-	virtual void setPluginParameterValue(int index, var value) = 0;
+	virtual float getPluginParameterValue(int index) const = 0;
+	virtual void setPluginParameterValue(int index, float value) = 0;
 	virtual String getPluginParameterName(int index) const = 0;
 
 	// Global parameter handlers
-	virtual var getGlobalParameterValue(GlobalParameter parameter) const = 0;
-	virtual void setGlobalParameterValue(GlobalParameter parameter, var value) = 0;
+	virtual var getParameterValue(ParameterID parameter) const = 0;
+	virtual void setParameterValue(ParameterID parameter, var value) = 0;
 	virtual const Array<Parameter*> getAllParameters(void) const = 0;
 
 	virtual AudioFormatManager* getAudioFormatManager(void) = 0;
-	virtual float getFractionalSamplerPhase(void) const = 0;
 };
 
 #endif //__APPLICATIONMODEL_H__

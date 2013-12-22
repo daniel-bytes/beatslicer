@@ -12,6 +12,7 @@
 #include "PluginEditor.h"
 #include "ApplicationController.h"
 #include "SamplerWaveformControl.h"
+#include "Parameter.h"
 
 #define NUM_SLICES 4
 
@@ -24,7 +25,9 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	  //grainsLabel("", "Grains"),
 	  numSlicesLabel("", "Num Slices"),
 	  pitchLabel("", "Pitch"),
-	  filePathLabel("", "Sample: ")
+	  filePathLabel("", "Sample: "),
+
+	  testLabel("", "TEST")
 {
 	Font labelFont(14.f, Font::FontStyleFlags::bold);
 	Font valueFont(14.f);
@@ -104,12 +107,16 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	addAndMakeVisible(waveform);
 	waveform->setBounds(20, 200, 600, 200);
 
+	addAndMakeVisible(&testLabel);
+	testLabel.setBounds(300, 500, 100, 100);
+	addAndMakeVisible(&test2Label);
+	test2Label.setBounds(500, 500, 100, 100);
+
     setSize (800, 600);
 }
 
 GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor()
 {
-	this->controller->setView(nullptr);
 	this->waveform = nullptr;
 }
 
@@ -119,6 +126,12 @@ void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 
 	if (this->controller != nullptr) {
 		waveform->initialize(this->controller);
+
+		auto parameters = controller->getAllParameters();
+		
+		for (auto parameter : parameters) {
+			setParameterValue(parameter->getParameterID(), parameter->getValue());
+		}
 	}
 }
 
@@ -159,8 +172,8 @@ void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 		{
 			File file = browser.getSelectedFile(0);
 			var path = file.getFullPathName();
-			this->setGlobalParameterValue(GlobalParameter::Sampler_FilePath, path);
-			controller->updateParameterModel(GlobalParameter::Sampler_FilePath, path);
+			this->setParameterValue(ParameterID::Sampler_FilePath, path);
+			controller->updateParameterModel(ParameterID::Sampler_FilePath, path);
 		}
 	}
 }
@@ -171,9 +184,10 @@ void GrainerAudioProcessorEditor::buttonStateChanged(Button* button)
 
 	if (button == &directionButton) {
 		bool isReverse = button->getToggleState();
-		bool wasReverse = (float)controller->getGlobalParameterValue(GlobalParameter::Sampler_Direction) < 0;
+		bool wasReverse = (bool)controller->getParameterValue(ParameterID::Sampler_Direction) == false;
+
 		if (isReverse != wasReverse) {
-			controller->updateParameterModel(GlobalParameter::Sampler_Direction, isReverse ? -1.f : 1.f);
+			controller->updateParameterModel(ParameterID::Sampler_Direction, isReverse ? false : true);
 		}
 	}
 }
@@ -182,7 +196,7 @@ void GrainerAudioProcessorEditor::comboBoxChanged(ComboBox *comboBoxThatHasChang
 {
 	if (comboBoxThatHasChanged == &numSlicesComboBox) {
 		int id = numSlicesComboBox.getSelectedId();
-		controller->updateParameterModel(GlobalParameter::Sampler_NumSlices, id);
+		controller->updateParameterModel(ParameterID::Sampler_NumSlices, id);
 		waveform->setNumSlices(id);
 	}
 }
@@ -192,10 +206,10 @@ void GrainerAudioProcessorEditor::sliderValueChanged (Slider* slider)
 	jassert(controller != nullptr);
 
 	if (slider == &gainSlider) {
-		controller->updateParameterModel(GlobalParameter::Sampler_Gain, (float)slider->getValue());
+		controller->updateParameterModel(ParameterID::Sampler_Gain, (float)slider->getValue());
 	}
 	else if (slider == &speedSlider) {
-		controller->updateParameterModel(GlobalParameter::Sampler_Speed, (float)slider->getValue() * .5f);
+		controller->updateParameterModel(ParameterID::Sampler_Speed, (float)slider->getValue());
 	}/*
 	else if (slider == &grainsSlider) {
 		controller->updateParameterModel(GlobalParameter::Sampler_GrainSize, (float)slider->getValue());
@@ -206,28 +220,28 @@ void GrainerAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* /*s
 {
 }
 
-void GrainerAudioProcessorEditor::setGlobalParameterValue(GlobalParameter parameter, var value)
+void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var value)
 {
 	switch(parameter)
 	{
-	case GlobalParameter::Sampler_Gain:
+	case ParameterID::Sampler_Gain:
 		gainSlider.setValue((float)value, NotificationType::dontSendNotification);
 		break;
-	case GlobalParameter::Sampler_Speed:
-		speedSlider.setValue((float)value * 2.f, NotificationType::dontSendNotification);
+	case ParameterID::Sampler_Speed:
+		speedSlider.setValue((float)value, NotificationType::dontSendNotification);
 		break;
 		/*
 	case GlobalParameter::Sampler_GrainSize:
 		grainsSlider.setValue((float)value, NotificationType::dontSendNotification);
 		break;
 		*/
-	case GlobalParameter::Sampler_Direction:
-		directionButton.setToggleState((float)value < .5f, NotificationType::dontSendNotification);
+	case ParameterID::Sampler_Direction:
+		directionButton.setToggleState((bool)value == false, NotificationType::dontSendNotification);
 		break;
-	case GlobalParameter::Sampler_Pitch:
-		pitchSlider.setValue(((float)value * 4.f) - 2.f, NotificationType::dontSendNotification);
+	case ParameterID::Sampler_Pitch:
+		pitchSlider.setValue((float)value, NotificationType::dontSendNotification);
 		break;
-	case GlobalParameter::Sampler_FilePath:
+	case ParameterID::Sampler_FilePath:
 		{
 			File file((String)value);
 			
@@ -238,11 +252,18 @@ void GrainerAudioProcessorEditor::setGlobalParameterValue(GlobalParameter parame
 			filePathValueLabel.setText((String)value, NotificationType::dontSendNotification);
 		}
 		break;
-	case GlobalParameter::Sampler_Phase:
+	case ParameterID::Sampler_Phase:
 		waveform->setWaveformPosition((float)value);
 		break;
-	case GlobalParameter::Sampler_NumSlices:
+	case ParameterID::Sampler_NumSlices:
 		waveform->setNumSlices((int)value);
+		break;
+
+	case ParameterID::TEST:
+		testLabel.setText(String("Phasor: ") + String((float)value), NotificationType::dontSendNotification);
+		break;
+	case ParameterID::TEST1:
+		test2Label.setText(String("clock: ") + String((float)value), NotificationType::dontSendNotification);
 		break;
 	}
 }

@@ -16,8 +16,11 @@
 //==============================================================================
 GrainerAudioProcessor::GrainerAudioProcessor()
 {
-	model = new AudioEngine(this);
-	controller = new ApplicationController();
+	model = new AudioEngine();
+
+	controller = new ApplicationController(
+							std::bind(&GrainerAudioProcessor::getModel, this),
+							std::bind(&GrainerAudioProcessor::getView, this));
 }
 
 GrainerAudioProcessor::~GrainerAudioProcessor()
@@ -140,7 +143,6 @@ void GrainerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 	(void)samplesPerBlock;
 	// Initialize model and wire up to controller
 	model->initialize(this->controller, sampleRate);
-	controller->setModel(model);
 }
 
 void GrainerAudioProcessor::releaseResources()
@@ -182,10 +184,26 @@ AudioProcessorEditor* GrainerAudioProcessor::createEditor()
 {
     auto view = new GrainerAudioProcessorEditor(this);
 	view->initialize(this->controller);
-	this->controller->setView(view);
-	this->controller->initializeUIParameters(this->model->getAllParameters());
+	
+	this->controller->beginUITimer();
 
 	return view;
+}
+
+ApplicationModel* GrainerAudioProcessor::getModel(void) 
+{
+	return this->model;
+}
+
+ApplicationView* GrainerAudioProcessor::getView(void)
+{
+	auto editor = this->getActiveEditor();
+
+	if (editor == nullptr) {
+		return nullptr;
+	}
+
+	return dynamic_cast<ApplicationView*>(editor);
 }
 
 //==============================================================================

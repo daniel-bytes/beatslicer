@@ -1,9 +1,12 @@
 #include "ApplicationController.h"
+#include "../JuceLibraryCode/JuceHeader.h"
 
 #include "ApplicationModel.h"
 #include "ApplicationView.h"
 #include "Parameter.h"
 
+// Serialization constants.  
+// Eventually this should be part of a separate serializer class.
 #define XMLTYPE_STRING "String"
 #define XMLTYPE_FLOAT "Float"
 #define XMLTYPE_INT "Integer"
@@ -13,8 +16,8 @@
 #define XMLATTRIBUTE_TYPE "type"
 #define XMLATTRIBUTE_VALUE "value"
 
-ApplicationController::ApplicationController()
-	: model(nullptr), view(nullptr)
+ApplicationController::ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<ApplicationView*()> viewFetch)
+	: getModel(modelFetch), getView(viewFetch), isPlaying(false), playbackPosition(0)
 {
 }
 
@@ -22,34 +25,41 @@ ApplicationController::~ApplicationController()
 {
 }
 
-void ApplicationController::setModel(ApplicationModel *model)
+const Array<Parameter*> ApplicationController::getAllParameters(void) const
 {
-	this->model = model;
+	auto model = getModel();
+
+	if (model == nullptr) {
+		return Array<Parameter*>();
+	}
+
+	return model->getAllParameters();
 }
 
-void ApplicationController::setView(ApplicationView *view)
+var ApplicationController::getParameterValue(ParameterID parameter) const
 {
-	this->view = view;
-}
+	auto model = getModel();
 
-var ApplicationController::getGlobalParameterValue(GlobalParameter parameter) const
-{
 	jassert(model != nullptr);
-	return this->model->getGlobalParameterValue(parameter);
+	return model->getParameterValue(parameter);
 }
 
 AudioFormatManager* ApplicationController::getAudioFormatManager(void)
 {
-	if (this->model == nullptr) {
+	auto model = getModel();
+
+	if (model == nullptr) {
 		return nullptr;
 	}
 
-	return this->model->getAudioFormatManager();
+	return model->getAudioFormatManager();
 }
 
 
 ChangeListener* ApplicationController::getWaveformChangeListener(void)
 {
+	auto view = getView();
+
 	if (view == nullptr) {
 		return nullptr;
 	}
@@ -59,12 +69,18 @@ ChangeListener* ApplicationController::getWaveformChangeListener(void)
 
 void ApplicationController::serializeParameters(XmlElement *xml)
 {
+	auto model = getModel();
+
+	if (model == nullptr) {
+		return;
+	}
+
 	auto parameters = model->getAllParameters();
 
 	for (auto parameter : parameters) {
 		auto child = xml->createNewChildElement(XMLTAG_PARAMETER);
 		child->setAttribute(XMLATTRIBUTE_NAME, parameter->getName());
-		child->setAttribute(XMLATTRIBUTE_ID, (int)parameter->getGlobalID());
+		child->setAttribute(XMLATTRIBUTE_ID, (int)parameter->getParameterID());
 		
 		var value = parameter->getValue();
 
@@ -88,10 +104,16 @@ void ApplicationController::serializeParameters(XmlElement *xml)
 
 void ApplicationController::deserializeParameters(XmlElement *xml)
 {
+	auto model = getModel();
+
+	if (model == nullptr) {
+		return;
+	}
+
 	auto parameters = model->getAllParameters();
 
 	for (auto parameter : parameters) {
-		String id((int)parameter->getGlobalID());
+		String id((int)parameter->getParameterID());
 		auto element = xml->getChildByAttribute(XMLATTRIBUTE_ID, StringRef(id));
 
 		if (element != nullptr) {
@@ -99,45 +121,39 @@ void ApplicationController::deserializeParameters(XmlElement *xml)
 
 			if (type == XMLTYPE_STRING) {
 				auto value = element->getStringAttribute(StringRef(XMLATTRIBUTE_VALUE), "");
-				this->updateParameterModelAndUI(parameter->getGlobalID(), value);
+				this->updateParameterModelAndUI(parameter->getParameterID(), value);
 			}
 			else if (type == XMLTYPE_FLOAT) {
 				auto value = (float)element->getDoubleAttribute(StringRef(XMLATTRIBUTE_VALUE));
-				this->updateParameterModelAndUI(parameter->getGlobalID(), value);
+				this->updateParameterModelAndUI(parameter->getParameterID(), value);
 			}
 			else if (type == XMLTYPE_INT) {
 				auto value = element->getIntAttribute(StringRef(XMLATTRIBUTE_VALUE));
-				this->updateParameterModelAndUI(parameter->getGlobalID(), value);
+				this->updateParameterModelAndUI(parameter->getParameterID(), value);
 			}
 		}
 	}
 }
 
-void ApplicationController::initializeUIParameters(const Array<Parameter*> &parameters)
+void ApplicationController::updateParameterUI(ParameterID parameter, var value)
 {
-	if (this->view != nullptr) {
-		for (auto parameter : parameters) {
-			jassert(parameter != nullptr);
-			updateParameterUI(parameter->getGlobalID(), parameter->getValue());
-		}
+	auto view = getView();
+
+	if (view != nullptr) {
+		view->setParameterValue(parameter, value);
 	}
 }
 
-void ApplicationController::updateParameterUI(GlobalParameter parameter, var value)
+void ApplicationController::updateParameterModel(ParameterID parameter, var value)
 {
-	if (this->view != nullptr) {
-		this->view->setGlobalParameterValue(parameter, value);
+	auto model = getModel();
+
+	if (model != nullptr) {
+		model->setParameterValue(parameter, value);
 	}
 }
 
-void ApplicationController::updateParameterModel(GlobalParameter parameter, var value)
-{
-	if (this->model != nullptr) {
-		this->model->setGlobalParameterValue(parameter, value);
-	}
-}
-
-void ApplicationController::updateParameterModelAndUI(GlobalParameter parameter, var value)
+void ApplicationController::updateParameterModelAndUI(ParameterID parameter, var value)
 {
 	updateParameterModel(parameter, value);
 	updateParameterUI(parameter, value);
@@ -145,10 +161,18 @@ void ApplicationController::updateParameterModelAndUI(GlobalParameter parameter,
 
 void ApplicationController::timerCallback()
 {
-	if (this->view == nullptr) {
+	auto model = getModel();
+	auto view = getView();
+
+	if (model == nullptr || view == nullptr) {
 		return;
 	}
 
-	float position = this->model->getFractionalSamplerPhase();
-	updateParameterUI(GlobalParameter::Sampler_Phase, position);
+	float position = model->getParameterValue(ParameterID::Sampler_Phase);
+	updateParameterUI(ParameterID::Sampler_Phase, position);
+
+	float test = (float)model->getParameterValue(ParameterID::TEST);
+	updateParameterUI(ParameterID::TEST, test);
+	float test1 = (float)model->getParameterValue(ParameterID::TEST1);
+	updateParameterUI(ParameterID::TEST1, test1);
 }

@@ -3,17 +3,19 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ApplicationModel.h"
-#include "GlobalParameters.h"
+#include "ParameterID.h"
 
 class Parameter;
 class ApplicationController;
 class Sampler;
+class Phasor;
+class ClockPhasor;
 
 class AudioEngine
 	: public ApplicationModel
 {
 public:
-	AudioEngine(AudioProcessor *parent);
+	AudioEngine(void);
 	~AudioEngine(void);
 
 public:
@@ -23,17 +25,16 @@ public:
 public:
 	// Plugin parameter handling
 	virtual int getNumPluginParameters(void) const;
-	virtual var getPluginParameterValue(int index) const;
-	virtual void setPluginParameterValue(int index, var value);
+	virtual float getPluginParameterValue(int index) const;
+	virtual void setPluginParameterValue(int index, float value);
 	virtual String getPluginParameterName(int index) const;
 
 public:
-	virtual var getGlobalParameterValue(GlobalParameter parameter) const;
-	virtual void setGlobalParameterValue(GlobalParameter parameter, var value);
+	virtual var getParameterValue(ParameterID parameter) const;
+	virtual void setParameterValue(ParameterID parameter, var value);
 	virtual const Array<Parameter*> getAllParameters(void) const;
 
 	virtual AudioFormatManager* getAudioFormatManager(void) { return formatManager; }
-	virtual float getFractionalSamplerPhase(void) const;
 
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
@@ -41,26 +42,34 @@ public:
 	void processBlock(AudioSampleBuffer& buffer, int numInputChannels, int numOutputChannels);
 
 private:
-	void configureParameters();
-	Parameter* configureParameter(GlobalParameter globalID, int localID, var initialValue, bool isPluginParameter);
+	// setup method for all application parameters
+	void configureParameters(void);
+
+	// configures a new parameter, which is not exposed to the host engine as a plugin parameter
+	Parameter* configureStandardParameter(ParameterID id, String name, var initialValue);
+
+	// configures a new parameter, which is exposed to the host engine
+	Parameter* configurePluginParameter(ParameterID id, String name, var initialValue, float minValue, float maxValue);
 
 private:
 	ScopedPointer<AudioFormatManager> formatManager;
-	AudioProcessor *parent;
 
 	// Parameter collections
 	OwnedArray<Parameter> allParameters;
-	HashMap<GlobalParameter, Parameter*, GlobalParameterHash> parameterMap;
+	HashMap<ParameterID, Parameter*, ParameterIDHash> parameterMap;
 	
-	Array<GlobalParameter> pluginParameterLookups;
-	HashMap<GlobalParameter, int, GlobalParameterHash> pluginParameterIdMap;
+	Array<ParameterID> pluginParameterLookups;
+	HashMap<ParameterID, int, ParameterIDHash> pluginParameterIdMap;
 
 	// Application controller
 	ApplicationController *controller;
 
 	// Dsp elements
+	double sampleRate;
 	float masterGain;
 	ScopedPointer<Sampler> sampler;
+	ScopedPointer<Phasor> phasor;
+	ScopedPointer<ClockPhasor> clockPhasor;
 };
 
 #endif //__AUDIOENGINE_H__

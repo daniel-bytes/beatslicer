@@ -2,26 +2,21 @@
 #define __PARAMETER_H__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "GlobalParameters.h"
+#include "ParameterID.h"
+#include "Utilities.h"
 
 class Parameter
 {
 public:
-	Parameter(GlobalParameter globalID, int localID, const String &name, var initialValue, bool pluginParameter)
+	Parameter(ParameterID id, const String &name, var initialValue)
 	{
-		this->globalID = globalID;
-		this->localID = localID;
+		this->id = id;
 		this->name = name;
 		this->value = initialValue;
-		this->pluginParameter = pluginParameter;
 	}
 
-	GlobalParameter getGlobalID(void) const {
-		return this->globalID;
-	}
-
-	int getLocalID(void) const {
-		return this->localID;
+	ParameterID getParameterID(void) const {
+		return this->id;
 	}
 
 	String getName(void) const {
@@ -36,16 +31,44 @@ public:
 		this->value = value;
 	}
 
-	bool isPluginParameter(void) const {
-		return pluginParameter;
+private:
+	ParameterID id;
+	String name;
+	var value;
+};
+
+class PluginParameter
+	: public Parameter
+{
+public:
+	PluginParameter(ParameterID id, const String &name, var initialValue, float minValue, float maxValue)
+		: Parameter(id, name, initialValue), minValue(minValue), maxValue(maxValue)
+	{
+	}
+
+	float getNormalizedValue(void) {
+		var value = getValue();
+
+		if (value.isBool()) {
+			return (bool)value ? maxValue : minValue;
+		}
+		else {
+			return normalize((float)getValue(), minValue, maxValue);
+		}
+	}
+
+	void setNormalizedValue(float value) {
+		if (getValue().isBool()) {
+			setValue(value == maxValue);
+		}
+		else {
+			value = scale(value, minValue, maxValue);
+			setValue(value);
+		}
 	}
 
 private:
-	GlobalParameter globalID;
-	int localID;
-	String name;
-	var value;
-	bool pluginParameter;
+	float minValue, maxValue;
 };
 
 #endif //__PARAMETER_H__

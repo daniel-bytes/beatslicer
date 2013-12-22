@@ -7,16 +7,27 @@ public:
 	Phasor();
 
 public:
-	void calculateNextPhase();
-	void initialize(float sampleRate, int bufferSize, float rate, bool direction);
+	float calculateNextPhase();
+
+	void setSampleRate(double value);
+	void setPlaybackRate(float value);
+	void setDirection(bool value);
+	void setBufferSize(int value, double bufferSampleRate);
+	void setCurrentPhase(float value);
 	
-	float getCurrentPhase(void) const { return value; }
-	void setCurrentPhase(float phase) { value = phase; }
+	float getCurrentPhase(void) const { return phase; }
 	int getBufferSize(void) const { return bufferSize; }
 
+private:
+	void initialize();
+
 protected:
+	float sampleRate;
+	float playbackRate;
+	bool direction;
 	int bufferSize;
-	float value;
+	float bufferSampleRate;
+	float phase;
 	float increment;
 };
 
