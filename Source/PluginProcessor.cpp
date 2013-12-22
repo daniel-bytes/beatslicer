@@ -57,7 +57,7 @@ const String GrainerAudioProcessor::getParameterName (int index)
 
 const String GrainerAudioProcessor::getParameterText (int index)
 {
-	return String(getParameter(index), 2);
+	return model->getPluginParameterDisplay(index);
 }
 
 const String GrainerAudioProcessor::getInputChannelName (int channelIndex) const
@@ -184,8 +184,6 @@ AudioProcessorEditor* GrainerAudioProcessor::createEditor()
 {
     auto view = new GrainerAudioProcessorEditor(this);
 	view->initialize(this->controller);
-	
-	this->controller->beginUITimer();
 
 	return view;
 }

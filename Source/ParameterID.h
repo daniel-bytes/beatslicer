@@ -18,10 +18,7 @@ enum class ParameterID
 	Sampler_FilePath = 105,
 	Sampler_Phase = 106,
 	Sampler_NumSlices = 107,
-	Sampler_NumBars = 108,
-
-	TEST = 900,
-	TEST1 = 901
+	Sampler_NumBars = 108
 };
 
 struct ParameterIDHash

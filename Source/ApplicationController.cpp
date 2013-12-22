@@ -170,9 +170,4 @@ void ApplicationController::timerCallback()
 
 	float position = model->getParameterValue(ParameterID::Sampler_Phase);
 	updateParameterUI(ParameterID::Sampler_Phase, position);
-
-	float test = (float)model->getParameterValue(ParameterID::TEST);
-	updateParameterUI(ParameterID::TEST, test);
-	float test1 = (float)model->getParameterValue(ParameterID::TEST1);
-	updateParameterUI(ParameterID::TEST1, test1);
 }

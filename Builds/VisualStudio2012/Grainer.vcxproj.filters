@@ -1458,6 +1458,12 @@
     <ClCompile Include="..\..\Source\ParameterID.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\StepSequencer.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\StepSequencerControl.cpp">
+      <Filter>Source\GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.h">
@@ -2833,6 +2839,12 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\ParameterID.h">
       <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StepSequencer.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StepSequencerControl.h">
+      <Filter>Source\GUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

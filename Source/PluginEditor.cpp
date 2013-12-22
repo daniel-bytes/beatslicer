@@ -12,6 +12,7 @@
 #include "PluginEditor.h"
 #include "ApplicationController.h"
 #include "SamplerWaveformControl.h"
+#include "StepSequencerControl.h"
 #include "Parameter.h"
 
 #define NUM_SLICES 4
@@ -25,9 +26,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	  //grainsLabel("", "Grains"),
 	  numSlicesLabel("", "Num Slices"),
 	  pitchLabel("", "Pitch"),
-	  filePathLabel("", "Sample: "),
-
-	  testLabel("", "TEST")
+	  filePathLabel("", "Sample: ")
 {
 	Font labelFont(14.f, Font::FontStyleFlags::bold);
 	Font valueFont(14.f);
@@ -105,18 +104,20 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 
 	waveform = new SamplerWaveformControl(numSlicesComboBox.getSelectedId());
 	addAndMakeVisible(waveform);
-	waveform->setBounds(20, 200, 600, 200);
+	waveform->setBounds(20, 200, 760, 200);
 
-	addAndMakeVisible(&testLabel);
-	testLabel.setBounds(300, 500, 100, 100);
-	addAndMakeVisible(&test2Label);
-	test2Label.setBounds(500, 500, 100, 100);
+	sequencer = new StepSequencerControl(16, 16);
+	addAndMakeVisible(sequencer);
+	sequencer->setBounds(20, 420, 760, 260);
 
-    setSize (800, 600);
+    setSize (800, 700);
 }
 
 GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor()
 {
+	if (this->controller != nullptr) {
+		this->controller->endUITimer();
+	}
 	this->waveform = nullptr;
 }
 
@@ -132,6 +133,8 @@ void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 		for (auto parameter : parameters) {
 			setParameterValue(parameter->getParameterID(), parameter->getValue());
 		}
+
+		this->controller->beginUITimer();
 	}
 }
 
@@ -257,13 +260,6 @@ void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var v
 		break;
 	case ParameterID::Sampler_NumSlices:
 		waveform->setNumSlices((int)value);
-		break;
-
-	case ParameterID::TEST:
-		testLabel.setText(String("Phasor: ") + String((float)value), NotificationType::dontSendNotification);
-		break;
-	case ParameterID::TEST1:
-		test2Label.setText(String("clock: ") + String((float)value), NotificationType::dontSendNotification);
 		break;
 	}
 }

@@ -4,7 +4,7 @@
 #include "ApplicationController.h"
 #include "Sampler.h"
 #include "Phasor.h"
-#include "ClockPhasor.h"
+#include "StepSequencer.h"
 
 #define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav"
 
@@ -15,7 +15,15 @@ AudioEngine::AudioEngine()
 	formatManager->registerBasicFormats();
 	sampler = new Sampler();
 	phasor = new Phasor();
-	clockPhasor = new ClockPhasor();
+	sequencer = new StepSequencer(4, 4, 1);
+
+	// test
+	Array<StepSequencerValue> values;
+	values.add(0);
+	values.add(-1);
+	values.add(0);
+	values.add(3);
+	sequencer->setValues(values);
 	
 	// run after all DSP processors are created
 	configureParameters();
@@ -25,7 +33,7 @@ AudioEngine::~AudioEngine(void)
 {
 	formatManager->clearFormats();
 	controller = nullptr;
-	clockPhasor = nullptr;
+	sequencer = nullptr;
 	phasor = nullptr;
 	sampler = nullptr;
 	formatManager = nullptr;
@@ -37,6 +45,7 @@ void AudioEngine::initialize(ApplicationController *controller, double sampleRat
 	this->controller = controller;
 	this->sampler->setSampleRate(sampleRate);
 	this->phasor->setSampleRate(sampleRate);
+	this->sequencer->setListener(this);
 }
 
 void AudioEngine::stop()
@@ -56,10 +65,6 @@ void AudioEngine::configureParameters(void)
 	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
 	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
 	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 4);
-
-	// just to show test/debug values
-	configureStandardParameter(ParameterID::TEST, "Test 1",  0.0f);
-	configureStandardParameter(ParameterID::TEST1, "Test 2", 0.0f);
 }
 
 Parameter* AudioEngine::configureStandardParameter(ParameterID id, String name, var initialValue)
@@ -101,6 +106,26 @@ float AudioEngine::getPluginParameterValue(int index) const
 	ParameterID lookup = pluginParameterLookups[index];
 	PluginParameter *parameter = static_cast<PluginParameter*>(parameterMap[lookup]);
 	return parameter->getNormalizedValue();
+}
+
+String AudioEngine::getPluginParameterDisplay(int index) const
+{
+	ParameterID lookup = pluginParameterLookups[index];
+	PluginParameter *parameter = static_cast<PluginParameter*>(parameterMap[lookup]);
+	var value = parameter->getValue();
+
+	if (value.isBool()) {
+		return (bool)value ? "true" : "false";
+	}
+	else if (value.isInt()) {
+		return String((int)value);
+	}
+	else if (value.isInt64()) {
+		return String((int64)value);
+	}
+	else {
+		return String((float)value, 2);
+	}
 }
 
 void AudioEngine::setPluginParameterValue(int index, float value)
@@ -162,7 +187,6 @@ void AudioEngine::setParameterValue(ParameterID parameter, var value)
 		phasor->setCurrentPhase((float)param->getValue() * sampler->getSamplerBufferSize());
 		break;
 	case ParameterID::Sampler_NumBars:
-		clockPhasor->setNumBars((int)value);
 		break;
 	}
 }
@@ -178,18 +202,23 @@ const Array<Parameter*> AudioEngine::getAllParameters(void) const
 	return parameters;
 }
 
+void AudioEngine::onStepTriggered(const StepSequencer &source, int step, StepSequencerValue value)
+{
+	(void)step;
+
+	if (&source == sequencer && value.hasValue()) {
+		float fractionalPhase = (float)value.value / (float)source.getNumRows();
+		float phase = (float)phasor->getBufferSize() * fractionalPhase;
+		phasor->setCurrentPhase(phase);
+	}
+}
+
 void AudioEngine::processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo)
 {
-	(void)posInfo;
-
 	this->controller->setSequencerParameters(posInfo.isPlaying, posInfo.ppqPosition);
 
 	if (posInfo.isPlaying) {
-		this->clockPhasor->setPhase(posInfo.ppqPosition);
-
-		if (this->clockPhasor->getCurrentPhase() == 0) {
-			this->phasor->setCurrentPhase(0);
-		}
+		this->sequencer->onClockStep(posInfo.ppqPosition);
 	}
 }
 
@@ -206,9 +235,12 @@ void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, 
 		float phase = phasor->getCurrentPhase();
 
 		for (int channel = 0; channel < numOutputChannels; channel++) {
-			float* channelData = buffer.getSampleData(channel);
-			float data = sampler->processSample(channel, phase);
-			*(channelData + sample) = data;
+			float data = 0;
+
+			if (controller->sequencerIsPlaying()) {
+				data = sampler->processSample(channel, phase);
+			}
+			*(buffer.getSampleData(channel) + sample) = data;
 		}
 
 		phasor->calculateNextPhase();

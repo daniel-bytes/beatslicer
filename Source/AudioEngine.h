@@ -4,15 +4,16 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "ApplicationModel.h"
 #include "ParameterID.h"
+#include "StepSequencer.h"
 
 class Parameter;
 class ApplicationController;
 class Sampler;
 class Phasor;
-class ClockPhasor;
 
 class AudioEngine
-	: public ApplicationModel
+	: public ApplicationModel,
+	  protected StepSequencer::Listener
 {
 public:
 	AudioEngine(void);
@@ -28,6 +29,7 @@ public:
 	virtual float getPluginParameterValue(int index) const;
 	virtual void setPluginParameterValue(int index, float value);
 	virtual String getPluginParameterName(int index) const;
+	virtual String getPluginParameterDisplay(int index) const;
 
 public:
 	virtual var getParameterValue(ParameterID parameter) const;
@@ -40,6 +42,9 @@ public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
 	void processMidi(MidiBuffer& midiMessages);
 	void processBlock(AudioSampleBuffer& buffer, int numInputChannels, int numOutputChannels);
+
+protected:
+	virtual void onStepTriggered(const StepSequencer &source, int step, StepSequencerValue row);
 
 private:
 	// setup method for all application parameters
@@ -69,7 +74,7 @@ private:
 	float masterGain;
 	ScopedPointer<Sampler> sampler;
 	ScopedPointer<Phasor> phasor;
-	ScopedPointer<ClockPhasor> clockPhasor;
+	ScopedPointer<StepSequencer> sequencer;
 };
 
 #endif //__AUDIOENGINE_H__

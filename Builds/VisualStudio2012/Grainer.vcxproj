@@ -1278,6 +1278,8 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_video\juce_video.cpp" />
     <ClCompile Include="..\..\Source\SamplerWaveformControl.cpp" />
     <ClCompile Include="..\..\Source\StandaloneApplication.cpp" />
+    <ClCompile Include="..\..\Source\StepSequencer.cpp" />
+    <ClCompile Include="..\..\Source\StepSequencerControl.cpp" />
     <ClCompile Include="..\..\Source\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -1737,6 +1739,8 @@
     <ClInclude Include="..\..\JuceLibraryCode\JuceHeader.h" />
     <ClInclude Include="..\..\Source\SamplerWaveformControl.h" />
     <ClInclude Include="..\..\Source\StandaloneApplicationWindow.h" />
+    <ClInclude Include="..\..\Source\StepSequencer.h" />
+    <ClInclude Include="..\..\Source\StepSequencerControl.h" />
     <ClInclude Include="..\..\Source\Utilities.h" />
     <ClInclude Include="..\..\Source\Wavetable.h" />
   </ItemGroup>

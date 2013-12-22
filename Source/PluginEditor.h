@@ -17,6 +17,7 @@
 
 class ApplicationController;
 class SamplerWaveformControl;
+class StepSequencerControl;
 
 //==============================================================================
 /**
@@ -57,9 +58,9 @@ private:
 	TextButton selectSampleButton;
 	ComboBox numSlicesComboBox;
 	Label gainLabel, speedLabel, numSlicesLabel, pitchLabel, filePathLabel, filePathValueLabel;
-	Label testLabel, test2Label;
 	ApplicationController *controller;
 	ScopedPointer<SamplerWaveformControl> waveform;
+	ScopedPointer<StepSequencerControl> sequencer;
 };
 
 

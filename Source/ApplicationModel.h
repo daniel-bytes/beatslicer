@@ -22,6 +22,7 @@ public:
 	virtual float getPluginParameterValue(int index) const = 0;
 	virtual void setPluginParameterValue(int index, float value) = 0;
 	virtual String getPluginParameterName(int index) const = 0;
+	virtual String getPluginParameterDisplay(int index) const = 0;
 
 	// Global parameter handlers
 	virtual var getParameterValue(ParameterID parameter) const = 0;
