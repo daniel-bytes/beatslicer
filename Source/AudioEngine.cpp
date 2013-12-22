@@ -63,8 +63,14 @@ void AudioEngine::configureParameters(void)
 	configurePluginParameter(ParameterID::Sampler_Pitch, "Pitch", 0.f, -24.f, 24.f);
 	configureStandardParameter(ParameterID::Sampler_FilePath, "File Path", TEST_FILEPATH);
 	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
-	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
-	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 4);
+	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 8);
+	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);
+	
+	configureStandardParameter(ParameterID::Sequencer_CurrentStep, "Current Step", 0);
+	configureStandardParameter(ParameterID::Sequencer_StepChange, "Step Change", 0);
+
+	var arr[] = {0, 1, 2, 3, 4, 5, 6, 7};
+	configureStandardParameter(ParameterID::Sequencer_AllValues, "All Steps", Array<var>(arr, 8));
 }
 
 Parameter* AudioEngine::configureStandardParameter(ParameterID id, String name, var initialValue)
@@ -188,6 +194,18 @@ void AudioEngine::setParameterValue(ParameterID parameter, var value)
 		break;
 	case ParameterID::Sampler_NumBars:
 		break;
+	case ParameterID::Sampler_NumSlices:
+		sequencer->setNumStepsAndRows((int)param->getValue(), (int)param->getValue());
+		break;
+	case ParameterID::Sequencer_StepChange:
+		{
+		SequencerStep step = (int)param->getValue();
+		sequencer->setStepValue(step.step, step.value);
+		}
+		break;
+	case ParameterID::Sequencer_AllValues:
+		sequencer->setAllValues(param->getValue().getArray());
+		break;
 	}
 }
 
@@ -204,12 +222,14 @@ const Array<Parameter*> AudioEngine::getAllParameters(void) const
 
 void AudioEngine::onStepTriggered(const StepSequencer &source, int step, StepSequencerValue value)
 {
-	(void)step;
+	if (&source == sequencer) {
+		if (value.hasValue()) {
+			float fractionalPhase = (float)value.value / (float)source.getNumRows();
+			float phase = (float)phasor->getBufferSize() * fractionalPhase;
+			phasor->setCurrentPhase(phase);
+		}
 
-	if (&source == sequencer && value.hasValue()) {
-		float fractionalPhase = (float)value.value / (float)source.getNumRows();
-		float phase = (float)phasor->getBufferSize() * fractionalPhase;
-		phasor->setCurrentPhase(phase);
+		controller->setSequencerPosition(step);
 	}
 }
 

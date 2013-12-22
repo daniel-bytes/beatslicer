@@ -54,6 +54,13 @@ public:
 		this->playbackPosition = position;
 	}
 
+	void setSequencerPosition(int position) {
+		if (position != sequencerPosition) {
+			sequencerPosition = position;
+			sequencerPositionChanged = true;
+		}
+	}
+
 private:
 	virtual void timerCallback();
 
@@ -62,6 +69,9 @@ private:
 	std::function<ApplicationView*()> getView;
 	bool isPlaying;
 	double playbackPosition;
+	
+	int sequencerPosition;
+	bool sequencerPositionChanged;
 };
 
 #endif //__APPLICATIONCONTROLLER_H__

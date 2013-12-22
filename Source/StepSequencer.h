@@ -2,26 +2,7 @@
 #define __STEPSEQUENCER_H__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-
-#define SEQUENCER_STEP_OFF -1
-
-struct StepSequencerValue
-{
-public:
-	StepSequencerValue()
-	{
-		value = SEQUENCER_STEP_OFF;
-	}
-
-	StepSequencerValue(int value)
-	{
-		this->value = value;
-	}
-
-	bool hasValue(void) const { return value > SEQUENCER_STEP_OFF; }
-
-	int value;
-};
+#include "StepSequencerValue.h"
 
 class StepSequencer
 {
@@ -37,8 +18,10 @@ public:
 
 	void setNumSteps(int value);
 	void setNumRows(int value);
+	void setNumStepsAndRows(int steps, int rows);
 	void setTicksPerStep(int value);
 	void setStepValue(int step, int value);
+	void setAllValues(Array<var> *values);
 	void setValues(const Array<StepSequencerValue> &values);
 	
 	void onClockStep(double ppq);

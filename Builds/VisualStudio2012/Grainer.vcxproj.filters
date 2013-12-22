@@ -2846,6 +2846,9 @@
     <ClInclude Include="..\..\Source\StepSequencerControl.h">
       <Filter>Source\GUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\StepSequencerValue.h">
+      <Filter>Source\Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\..\..\..\..\Code\Libs\JUCE\modules\juce_audio_basics\juce_module_info">

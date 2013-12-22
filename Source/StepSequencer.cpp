@@ -23,10 +23,27 @@ void StepSequencer::setNumRows(int value)
 	configureSteps();
 }
 
+void StepSequencer::setNumStepsAndRows(int steps, int rows)
+{
+	this->numSteps = steps;
+	this->numRows = rows;
+	configureSteps();
+}
+
 void StepSequencer::setTicksPerStep(int value)
 {
 	this->ticksPerStep = value;
 	configureSteps();
+}
+
+void StepSequencer::setAllValues(Array<var> *values)
+{
+	this->values.resize(values->size());
+
+	for (int i = 0; i < values->size(); i++) {
+		int newValue = jlimit(SEQUENCER_STEP_OFF, numRows - 1, (int)(*values)[i]);
+		this->values.set(i, newValue);
+	}
 }
 
 void StepSequencer::setValues(const Array<StepSequencerValue> &values)
@@ -54,7 +71,7 @@ void StepSequencer::setStepValue(int step, int value)
 
 void StepSequencer::onClockStep(double ppq)
 {
-	int clockPos = (int)ppq % numSteps;
+	int clockPos = (int)floor(ppq) % numSteps;
 	
 	if (currentStep != clockPos) {
 		currentStep = jlimit(0, numSteps - 1, clockPos);

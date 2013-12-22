@@ -17,7 +17,7 @@
 #define XMLATTRIBUTE_VALUE "value"
 
 ApplicationController::ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<ApplicationView*()> viewFetch)
-	: getModel(modelFetch), getView(viewFetch), isPlaying(false), playbackPosition(0)
+	: getModel(modelFetch), getView(viewFetch), isPlaying(false), playbackPosition(0), sequencerPosition(0), sequencerPositionChanged(false)
 {
 }
 
@@ -170,4 +170,9 @@ void ApplicationController::timerCallback()
 
 	float position = model->getParameterValue(ParameterID::Sampler_Phase);
 	updateParameterUI(ParameterID::Sampler_Phase, position);
+	
+	if (sequencerPositionChanged) {
+		updateParameterUI(ParameterID::Sequencer_CurrentStep, this->sequencerPosition);
+		sequencerPositionChanged = false;
+	}
 }

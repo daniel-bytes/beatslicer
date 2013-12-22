@@ -18,7 +18,11 @@ enum class ParameterID
 	Sampler_FilePath = 105,
 	Sampler_Phase = 106,
 	Sampler_NumSlices = 107,
-	Sampler_NumBars = 108
+	Sampler_NumBars = 108,
+	
+	Sequencer_StepChange = 200,
+	Sequencer_AllValues = 201,
+	Sequencer_CurrentStep = 202
 };
 
 struct ParameterIDHash

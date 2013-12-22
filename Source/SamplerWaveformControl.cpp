@@ -75,14 +75,14 @@ void SamplerWaveformControl::paint(Graphics &g)
 	g.drawLine((float)lineOffset, (float)waveformBounds.getY(), (float)lineOffset, (float)(waveformBounds.getY() + waveformBounds.getHeight()));
 		
 	//int sliceNumber = (int)(waveformPosition * (float)numSlices);
-	for (int i = 1; i < numSlices; i++) {
-		g.setColour(Colours::grey);
-		int offset = (waveformBounds.getWidth() / numSlices) * i;
-		g.drawLine((float)offset, (float)waveformBounds.getY(), (float)offset, (float)(waveformBounds.getY() + waveformBounds.getHeight()));
+	float stepMult = (float)this->getWidth() / (float)numSlices;
+	float y = 2;
+	float y2 = (float)getHeight() - 2;
 
-		//if (
+	for (int i = 0; i < numSlices; i++) {
+		float x = (float)i * stepMult;
+		g.drawLine(x, y, x, y2); 
 	}
-
 }
 
 void SamplerWaveformControl::mouseDown(const MouseEvent &event)
