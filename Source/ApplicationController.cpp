@@ -196,8 +196,10 @@ void ApplicationController::timerCallback()
 		return;
 	}
 
-	float position = model->getParameterValue(ParameterID::Sampler_Phase);
-	updateParameterUI(ParameterID::Sampler_Phase, position);
+	//float position = model->getParameterValue(ParameterID::Sampler_Phase);
+	//updateParameterUI(ParameterID::Sampler_Phase, position);
+
+	updateParameterUI(ParameterID::Sequencer_CurrentValue, playbackValue);
 	
 	if (sequencerPositionChanged) {
 		updateParameterUI(ParameterID::Sequencer_CurrentStep, this->sequencerPosition);

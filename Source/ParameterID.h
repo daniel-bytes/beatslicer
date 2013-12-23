@@ -22,7 +22,8 @@ enum class ParameterID
 	
 	Sequencer_StepChange = 201,
 	Sequencer_CurrentStep = 202,
-	Sequencer_BeatsPerMinute = 203
+	Sequencer_CurrentValue = 203,
+	Sequencer_BeatsPerMinute = 204
 };
 
 struct ParameterIDHash

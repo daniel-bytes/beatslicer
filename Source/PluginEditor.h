@@ -49,9 +49,6 @@ public:
 
 	virtual void setParameterValue(ParameterID parameter, var value);
 
-	virtual void mouseDown(const MouseEvent &event);
-	virtual void mouseDrag(const MouseEvent &event);
-
 private:
 	Slider gainSlider, speedSlider, pitchSlider;
 	ToggleButton directionButton;

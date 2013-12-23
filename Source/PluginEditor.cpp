@@ -130,7 +130,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
     setSize (800, 700);
 }
 
-GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor()
+GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor(void)
 {
 	if (this->controller != nullptr) {
 		this->controller->endUITimer();
@@ -158,21 +158,12 @@ void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 
 
 //==============================================================================
-void GrainerAudioProcessorEditor::paint (Graphics &g)
+void GrainerAudioProcessorEditor::paint(Graphics &g)
 {
     g.fillAll(Colours::white);
 }
 
-
-void GrainerAudioProcessorEditor::mouseDown(const MouseEvent &/*event*/)
-{
-}
-
-void GrainerAudioProcessorEditor::mouseDrag(const MouseEvent &/*event*/)
-{
-}
-
-void GrainerAudioProcessorEditor::buttonClicked (Button *button)
+void GrainerAudioProcessorEditor::buttonClicked(Button *button)
 {
 	jassert(controller != nullptr);
 
@@ -189,8 +180,7 @@ void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 										browser,
 										false,
 										Colours::lightgrey);
-		if (dialogBox.show())
-		{
+		if (dialogBox.show()) {
 			File file = browser.getSelectedFile(0);
 			var path = file.getFullPathName();
 			this->setParameterValue(ParameterID::Sampler_FilePath, path);
@@ -283,7 +273,7 @@ void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var v
 		}
 		break;
 	case ParameterID::Sampler_Phase:
-		waveform->setWaveformPosition((float)value);
+		waveform->setCurrentSlice((int)((float)value * (float)waveform->getNumSlices()));
 		break;
 	case ParameterID::Sampler_NumSlices:
 		numSlicesComboBox.setSelectedId((int)value, NotificationType::dontSendNotification);
@@ -294,6 +284,9 @@ void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var v
 		break;
 	case ParameterID::Sequencer_CurrentStep:
 		sequencer->repaint();
+		break;
+	case ParameterID::Sequencer_CurrentValue:
+		waveform->setCurrentSlice((int)value);
 		break;
 	}
 }

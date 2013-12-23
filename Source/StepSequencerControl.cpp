@@ -130,10 +130,10 @@ void StepSequencerControl::onMouseEvent(const MouseEvent &event, bool isDrag)
 			seqValue.isSet = !data->values[stepNumber].isSet;
 		}
 
-		isDelete = !seqValue.isSet;
+		isDelete = !seqValue.isSet; 
 	}
 	
-	controller->updateParameterModel(ParameterID::Sequencer_StepChange, seqValue.serialize());
+  	controller->updateParameterModel(ParameterID::Sequencer_StepChange, seqValue.serialize());
 
 	repaint();
 }

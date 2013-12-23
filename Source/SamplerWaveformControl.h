@@ -15,10 +15,9 @@ public:
 
 public:
 	int getNumSlices(void) const { return numSlices; }
-	float getWaveformPosition(void) const { return waveformPosition; }
 	
 	void setNumSlices(int numSlices);
-	void setWaveformPosition(float position);
+	void setCurrentSlice(int slice);
 
 	void initialize(ApplicationController *controller);
 
@@ -26,14 +25,13 @@ public:
 
 public:
     void paint(Graphics &g);
-	void mouseDown(const MouseEvent &event);
 	virtual void changeListenerCallback (ChangeBroadcaster* source);
 
 private:
 	ApplicationController *controller;
 	ScopedPointer<AudioThumbnailCache> waveformCache;
 	ScopedPointer<AudioThumbnail> waveform;
-	float waveformPosition;
+	int currentSlice;
 	int numSlices;
 };
 

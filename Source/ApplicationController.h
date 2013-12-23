@@ -65,6 +65,10 @@ public:
 		}
 	}
 
+	void setPlaybackValue(int value) {
+		playbackValue = value;
+	}
+
 	void resetSequencerSlices(void);
 
 private:
@@ -76,6 +80,7 @@ private:
 	double bpm;
 	bool isPlaying;
 	double playbackPosition;
+	int playbackValue;
 	
 	int sequencerPosition;
 	bool sequencerPositionChanged;

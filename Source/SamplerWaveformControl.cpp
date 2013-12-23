@@ -20,9 +20,9 @@ void SamplerWaveformControl::setNumSlices(int numSlices)
 	this->repaint();
 }
 
-void SamplerWaveformControl::setWaveformPosition(float position)
+void SamplerWaveformControl::setCurrentSlice(int slice)
 {
-	this->waveformPosition = position;
+	this->currentSlice = slice;
 	this->repaint();
 }
 
@@ -67,32 +67,19 @@ void SamplerWaveformControl::paint(Graphics &g)
 
     g.fillAll(Colours::white);
 	g.drawRect(waveformBounds, 2);
-
-	waveform->drawChannel(g, waveformBounds, 0, waveform->getTotalLength(), 0, 1.0f);
 		
 	g.setColour(Colours::red);
-	auto lineOffset = waveformPosition * (float)waveformBounds.getWidth();
-	g.drawLine((float)lineOffset, (float)waveformBounds.getY(), (float)lineOffset, (float)(waveformBounds.getY() + waveformBounds.getHeight()));
-		
-	//int sliceNumber = (int)(waveformPosition * (float)numSlices);
 	float stepMult = (float)this->getWidth() / (float)numSlices;
 	float y = 2;
 	float y2 = (float)getHeight() - 2;
-
+	g.fillRect(currentSlice * stepMult, 0.f, stepMult, (float)waveformBounds.getHeight());
+	
+	g.setColour(Colours::black);
+	waveform->drawChannel(g, waveformBounds, 0, waveform->getTotalLength(), 0, 1.0f);
+	
+	g.setColour(Colours::grey);
 	for (int i = 0; i < numSlices; i++) {
 		float x = (float)i * stepMult;
 		g.drawLine(x, y, x, y2); 
 	}
-}
-
-void SamplerWaveformControl::mouseDown(const MouseEvent &event)
-{
-	auto position = event.getPosition();
-
-	float distance = jlimit(0.f, .9999f, (float)position.getX() / (float)this->getWidth());
-	float sliceNumber = distance * (float)numSlices;
-	distance = floor(sliceNumber) / (float)numSlices;
-	controller->updateParameterModel(ParameterID::Sampler_Phase, distance);
-
-	this->repaint();
 }

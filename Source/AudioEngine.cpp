@@ -61,6 +61,7 @@ void AudioEngine::configureParameters(void)
 	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
 	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);
 	
+	configureStandardParameter(ParameterID::Sequencer_CurrentValue, "Seq Value", 0);
 	configureStandardParameter(ParameterID::Sequencer_BeatsPerMinute, "BPM", 94.0);
 	configureStandardParameter(ParameterID::Sequencer_CurrentStep, "Current Step", 0);
 	configureStandardParameter(ParameterID::Sequencer_StepChange, "Step Change", 0);
@@ -252,6 +253,7 @@ void AudioEngine::onStepTriggered(const StepSequencer &source, int step, StepSeq
 		}
 
 		controller->setSequencerPosition(step);
+		controller->setPlaybackValue(value.value);
 	}
 }
 
