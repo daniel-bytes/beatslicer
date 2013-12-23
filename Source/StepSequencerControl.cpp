@@ -107,10 +107,6 @@ void StepSequencerControl::onMouseEvent(const MouseEvent &event, bool isDrag)
 	// create a new value to return
 	StepSequencerValue seqValue = { stepNumber, stepValue, true };
 
-	if (data->values[stepNumber].value == stepValue) {
-		seqValue.isSet = !data->values[stepNumber].isSet;
-	}
-
 	// If we are dragging and the last action was a delete, we only want to delete from now.
 	// Same if the last action was a draw (in that case just draw, no delete).
 	if (isDrag) {
@@ -122,10 +118,19 @@ void StepSequencerControl::onMouseEvent(const MouseEvent &event, bool isDrag)
 				return;
 			}
 		}
+		else {
+			seqValue.isSet = true;
+		}
 	}
 	else {
 		lastX = stepNumber;
 		lastY = stepValue;
+
+		if (data->values[stepNumber].value == stepValue) {
+			seqValue.isSet = !data->values[stepNumber].isSet;
+		}
+
+		isDelete = !seqValue.isSet;
 	}
 	
 	controller->updateParameterModel(ParameterID::Sequencer_StepChange, seqValue.serialize());

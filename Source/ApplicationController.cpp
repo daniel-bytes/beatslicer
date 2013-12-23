@@ -84,6 +84,17 @@ const StepSequencerData* ApplicationController::getSequencerData(void) const
 	return model->getSequencerData();
 }
 
+void ApplicationController::resetSequencerSlices(void)
+{
+	auto model = getModel();
+
+	if (model == nullptr) {
+		return;
+	}
+
+	model->resetSequencerSlices();
+}
+
 void ApplicationController::serializeParameters(XmlElement *xml)
 {
 	auto model = getModel();

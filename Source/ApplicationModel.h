@@ -34,6 +34,7 @@ public:
 
 	virtual AudioFormatManager* getAudioFormatManager(void) = 0;
 	virtual const StepSequencerData* getSequencerData(void) const = 0;
+	virtual void resetSequencerSlices(void) = 0;
 };
 
 #endif //__APPLICATIONMODEL_H__

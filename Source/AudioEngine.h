@@ -38,6 +38,7 @@ public:
 
 	virtual AudioFormatManager* getAudioFormatManager(void) { return formatManager; }
 	virtual const StepSequencerData* getSequencerData(void) const;
+	virtual void resetSequencerSlices(void);
 
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
@@ -75,6 +76,7 @@ private:
 	// Dsp elements
 	double sampleRate;
 	float masterGain;
+	bool mute;
 	ScopedPointer<Sampler> sampler;
 	ScopedPointer<Phasor> phasor;
 	ScopedPointer<StepSequencer> sequencer;

@@ -98,7 +98,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
     numSlicesLabel.setFont(labelFont);
 	
 	addAndMakeVisible(&numBarsComboBox);
-	numBarsComboBox.setBounds(320, 140, 80, 20);
+	numBarsComboBox.setBounds(320, 130, 80, 20);
 	numBarsComboBox.addItem("1", 1);
 	numBarsComboBox.addItem("2", 2);
 	numBarsComboBox.addItem("3", 3);
@@ -109,17 +109,23 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
     numBarsLabel.setFont(labelFont);
 	
 	addAndMakeVisible(&directionButton);
-	directionButton.setBounds(320, 160, 80, 20);
+	directionButton.setBounds(320, 162, 80, 20);
 	directionButton.setButtonText("Reverse");
 	directionButton.addListener(this);
 
+	addAndMakeVisible(&resetSlicesButton);
+	resetSlicesButton.setButtonText("Reset");
+	resetSlicesButton.setTooltip("Reset slices to default");
+	resetSlicesButton.setBounds(420, 80, 60, 20);
+	resetSlicesButton.addListener(this);
+
 	waveform = new SamplerWaveformControl(numSlicesComboBox.getSelectedId());
 	addAndMakeVisible(waveform);
-	waveform->setBounds(20, 200, 760, 200);
+	waveform->setBounds(20, 200, 760, 160);
 
 	sequencer = new StepSequencerControl();
 	addAndMakeVisible(sequencer);
-	sequencer->setBounds(20, 420, 760, 260);
+	sequencer->setBounds(20, 380, 760, 300);
 
     setSize (800, 700);
 }
@@ -190,6 +196,10 @@ void GrainerAudioProcessorEditor::buttonClicked (Button *button)
 			this->setParameterValue(ParameterID::Sampler_FilePath, path);
 			controller->updateParameterModel(ParameterID::Sampler_FilePath, path);
 		}
+	}
+	else if (button == &resetSlicesButton) {
+		controller->resetSequencerSlices();
+		repaint();
 	}
 }
 

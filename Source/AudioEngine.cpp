@@ -9,7 +9,7 @@
 #define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\GitHub\\Grainer\\Resources\\Drum_Break01(94BPM).wav"
 
 AudioEngine::AudioEngine()
-	: controller(nullptr)
+	: controller(nullptr), mute(false)
 {
 	formatManager = new AudioFormatManager();
 	formatManager->registerBasicFormats();
@@ -58,10 +58,10 @@ void AudioEngine::configureParameters(void)
 	configurePluginParameter(ParameterID::Sampler_Pitch, "Pitch", 0.f, -24.f, 24.f);
 	configureStandardParameter(ParameterID::Sampler_FilePath, "File Path", TEST_FILEPATH);
 	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
-	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 8);
-	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 2);
+	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
+	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);
 	
-	configureStandardParameter(ParameterID::Sequencer_BeatsPerMinute, "BPM", 120.0f);
+	configureStandardParameter(ParameterID::Sequencer_BeatsPerMinute, "BPM", 94.0);
 	configureStandardParameter(ParameterID::Sequencer_CurrentStep, "Current Step", 0);
 	configureStandardParameter(ParameterID::Sequencer_StepChange, "Step Change", 0);
 }
@@ -96,6 +96,13 @@ Parameter* AudioEngine::configurePluginParameter(ParameterID id, String name, va
 const StepSequencerData* AudioEngine::getSequencerData(void) const
 {
 	return sequencer->getSequencerData();
+}
+
+void AudioEngine::resetSequencerSlices(void)
+{
+	auto initialValues = getInitialStepValues();
+
+	sequencer->setAllValues(&initialValues);
 }
 
 Array<var> AudioEngine::getInitialStepValues()
@@ -238,6 +245,10 @@ void AudioEngine::onStepTriggered(const StepSequencer &source, int step, StepSeq
 			float fractionalPhase = (float)value.value / (float)source.getNumRows();
 			float phase = (float)phasor->getBufferSize() * fractionalPhase;
 			phasor->setCurrentPhase(phase);
+			mute = false;
+		}
+		else {
+			mute = true;
 		}
 
 		controller->setSequencerPosition(step);
@@ -272,7 +283,7 @@ void AudioEngine::processBlock(AudioSampleBuffer& buffer, int numInputChannels, 
 		for (int channel = 0; channel < numOutputChannels; channel++) {
 			float data = 0;
 
-			if (controller->sequencerIsPlaying()) {
+			if (controller->sequencerIsPlaying() && !mute) {
 				data = sampler->processSample(channel, phase);
 			}
 			*(buffer.getSampleData(channel) + sample) = data;

@@ -65,6 +65,8 @@ public:
 		}
 	}
 
+	void resetSequencerSlices(void);
+
 private:
 	virtual void timerCallback();
 
