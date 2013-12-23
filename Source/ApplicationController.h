@@ -8,6 +8,7 @@
 class ApplicationModel;
 class ApplicationView;
 class Parameter;
+struct StepSequencerData;
 
 /*
  * This is a traditional MVC controller class.
@@ -46,12 +47,15 @@ public:
 	AudioFormatManager* getAudioFormatManager(void);
 	ChangeListener* getWaveformChangeListener(void);
 
+	const StepSequencerData* getSequencerData(void) const;
 	bool sequencerIsPlaying(void) const { return isPlaying; }
 	double getSequencerPosition(void) const { return playbackPosition; }
+	double getBeatsPerMinute(void) const { return bpm; }
 
-	void setSequencerParameters(bool isPlaying, double position) {
+	void setSequencerParameters(bool isPlaying, double position, double bpm) {
 		this->isPlaying = isPlaying;
 		this->playbackPosition = position;
+		this->bpm = bpm;
 	}
 
 	void setSequencerPosition(int position) {
@@ -67,6 +71,7 @@ private:
 private:
 	std::function<ApplicationModel*()> getModel;
 	std::function<ApplicationView*()> getView;
+	double bpm;
 	bool isPlaying;
 	double playbackPosition;
 	

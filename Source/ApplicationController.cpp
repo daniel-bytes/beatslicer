@@ -17,7 +17,13 @@
 #define XMLATTRIBUTE_VALUE "value"
 
 ApplicationController::ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<ApplicationView*()> viewFetch)
-	: getModel(modelFetch), getView(viewFetch), isPlaying(false), playbackPosition(0), sequencerPosition(0), sequencerPositionChanged(false)
+	: getModel(modelFetch), 
+	  getView(viewFetch), 
+	  isPlaying(false), 
+	  bpm(120.0),
+	  playbackPosition(0), 
+	  sequencerPosition(0), 
+	  sequencerPositionChanged(false)
 {
 }
 
@@ -65,6 +71,17 @@ ChangeListener* ApplicationController::getWaveformChangeListener(void)
 	}
 
 	return (ChangeListener*)view;
+}
+
+const StepSequencerData* ApplicationController::getSequencerData(void) const
+{
+	auto model = getModel();
+
+	if (model == nullptr) {
+		return nullptr;
+	}
+
+	return model->getSequencerData();
 }
 
 void ApplicationController::serializeParameters(XmlElement *xml)

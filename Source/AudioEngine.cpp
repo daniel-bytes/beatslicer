@@ -15,15 +15,7 @@ AudioEngine::AudioEngine()
 	formatManager->registerBasicFormats();
 	sampler = new Sampler();
 	phasor = new Phasor();
-	sequencer = new StepSequencer(4, 4, 1);
-
-	// test
-	Array<StepSequencerValue> values;
-	values.add(0);
-	values.add(-1);
-	values.add(0);
-	values.add(3);
-	sequencer->setValues(values);
+	sequencer = new StepSequencer(8, 8, 1);
 	
 	// run after all DSP processors are created
 	configureParameters();
@@ -41,10 +33,13 @@ AudioEngine::~AudioEngine(void)
 
 void AudioEngine::initialize(ApplicationController *controller, double sampleRate)
 {
+	auto initialValues = getInitialStepValues();
+
 	this->sampleRate = sampleRate;
 	this->controller = controller;
 	this->sampler->setSampleRate(sampleRate);
 	this->phasor->setSampleRate(sampleRate);
+	this->sequencer->setAllValues(&initialValues);
 	this->sequencer->setListener(this);
 }
 
@@ -66,11 +61,9 @@ void AudioEngine::configureParameters(void)
 	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 8);
 	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);
 	
+	configureStandardParameter(ParameterID::Sequencer_BeatsPerMinute, "BPM", 120.0f);
 	configureStandardParameter(ParameterID::Sequencer_CurrentStep, "Current Step", 0);
 	configureStandardParameter(ParameterID::Sequencer_StepChange, "Step Change", 0);
-
-	var arr[] = {0, 1, 2, 3, 4, 5, 6, 7};
-	configureStandardParameter(ParameterID::Sequencer_AllValues, "All Steps", Array<var>(arr, 8));
 }
 
 Parameter* AudioEngine::configureStandardParameter(ParameterID id, String name, var initialValue)
@@ -98,6 +91,23 @@ Parameter* AudioEngine::configurePluginParameter(ParameterID id, String name, va
 	setParameterValue(id, initialValue);
 
 	return parameter;
+}
+
+const StepSequencerData* AudioEngine::getSequencerData(void) const
+{
+	return sequencer->getSequencerData();
+}
+
+Array<var> AudioEngine::getInitialStepValues()
+{
+	Array<var> values;
+	int numSteps = (int)getParameterValue(ParameterID::Sampler_NumSlices);
+
+	for (int i = 0; i < numSteps; i++) {
+		values.add(i);
+	}
+
+	return values;
 }
 
 // Plugin parameter handling.  
@@ -193,18 +203,16 @@ void AudioEngine::setParameterValue(ParameterID parameter, var value)
 		phasor->setCurrentPhase((float)param->getValue() * sampler->getSamplerBufferSize());
 		break;
 	case ParameterID::Sampler_NumBars:
+	case ParameterID::Sequencer_BeatsPerMinute:
 		break;
 	case ParameterID::Sampler_NumSlices:
 		sequencer->setNumStepsAndRows((int)param->getValue(), (int)param->getValue());
 		break;
 	case ParameterID::Sequencer_StepChange:
 		{
-		SequencerStep step = (int)param->getValue();
-		sequencer->setStepValue(step.step, step.value);
+			StepSequencerValue step = StepSequencerValue::deserialize(param->getValue());
+			sequencer->setStepValue(step.step, step);
 		}
-		break;
-	case ParameterID::Sequencer_AllValues:
-		sequencer->setAllValues(param->getValue().getArray());
 		break;
 	}
 }
@@ -223,7 +231,7 @@ const Array<Parameter*> AudioEngine::getAllParameters(void) const
 void AudioEngine::onStepTriggered(const StepSequencer &source, int step, StepSequencerValue value)
 {
 	if (&source == sequencer) {
-		if (value.hasValue()) {
+		if (value.isSet) {
 			float fractionalPhase = (float)value.value / (float)source.getNumRows();
 			float phase = (float)phasor->getBufferSize() * fractionalPhase;
 			phasor->setCurrentPhase(phase);
@@ -235,7 +243,11 @@ void AudioEngine::onStepTriggered(const StepSequencer &source, int step, StepSeq
 
 void AudioEngine::processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo)
 {
-	this->controller->setSequencerParameters(posInfo.isPlaying, posInfo.ppqPosition);
+	if (posInfo.bpm != controller->getBeatsPerMinute()) {
+		this->setParameterValue(ParameterID::Sequencer_BeatsPerMinute, posInfo.bpm);
+	}
+
+	this->controller->setSequencerParameters(posInfo.isPlaying, posInfo.ppqPosition, posInfo.bpm);
 
 	if (posInfo.isPlaying) {
 		this->sequencer->onClockStep(posInfo.ppqPosition);

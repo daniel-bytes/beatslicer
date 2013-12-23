@@ -20,9 +20,9 @@ enum class ParameterID
 	Sampler_NumSlices = 107,
 	Sampler_NumBars = 108,
 	
-	Sequencer_StepChange = 200,
-	Sequencer_AllValues = 201,
-	Sequencer_CurrentStep = 202
+	Sequencer_StepChange = 201,
+	Sequencer_CurrentStep = 202,
+	Sequencer_BeatsPerMinute = 203
 };
 
 struct ParameterIDHash

@@ -14,6 +14,9 @@ class Parameter;
  * notify the controller of any internal parameter changes (via things like timer callbacks, sequencers, etc).
  * The controller can then notify any attached ApplicationViews.
  */
+
+#include "StepSequencerData.h"
+
 class ApplicationModel
 {
 public:
@@ -30,6 +33,7 @@ public:
 	virtual const Array<Parameter*> getAllParameters(void) const = 0;
 
 	virtual AudioFormatManager* getAudioFormatManager(void) = 0;
+	virtual const StepSequencerData* getSequencerData(void) const = 0;
 };
 
 #endif //__APPLICATIONMODEL_H__

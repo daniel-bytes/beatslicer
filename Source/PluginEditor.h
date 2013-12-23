@@ -56,8 +56,8 @@ private:
 	Slider gainSlider, speedSlider, pitchSlider;
 	ToggleButton directionButton;
 	TextButton selectSampleButton;
-	ComboBox numSlicesComboBox;
-	Label gainLabel, speedLabel, numSlicesLabel, pitchLabel, filePathLabel, filePathValueLabel;
+	ComboBox numSlicesComboBox, numBarsComboBox;
+	Label gainLabel, speedLabel, numSlicesLabel, pitchLabel, filePathLabel, filePathValueLabel, numBarsLabel;
 	ApplicationController *controller;
 	ScopedPointer<SamplerWaveformControl> waveform;
 	ScopedPointer<StepSequencerControl> sequencer;

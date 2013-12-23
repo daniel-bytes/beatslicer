@@ -2,7 +2,8 @@
 #define __STEPSEQUENCER_H__
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "StepSequencerValue.h"
+
+#include "StepSequencerData.h"
 
 class StepSequencer
 {
@@ -11,18 +12,18 @@ public:
 	virtual ~StepSequencer(void);
 
 public:
-	int getNumSteps(void) const { return numSteps; }
-	int getNumRows(void) const { return numRows; }
-	int getTicksPerStep(void) const { return ticksPerStep; }
-	int getCurrentStep(void) const { return currentStep; }
+	// return a copy of the current sequencer data
+	const StepSequencerData* getSequencerData(void) const { return data; }
+
+	int getNumSteps(void) const { return data->numSteps; }
+	int getNumRows(void) const { return data->numRows; }
 
 	void setNumSteps(int value);
 	void setNumRows(int value);
 	void setNumStepsAndRows(int steps, int rows);
 	void setTicksPerStep(int value);
-	void setStepValue(int step, int value);
-	void setAllValues(Array<var> *values);
-	void setValues(const Array<StepSequencerValue> &values);
+	void setStepValue(int step, StepSequencerValue value);
+	void setAllValues(Array<var> *newValues);
 	
 	void onClockStep(double ppq);
 
@@ -39,12 +40,8 @@ private:
 	void configureSteps(void);
 
 private:
-	int numSteps;
-	int numRows;
-	int ticksPerStep;
-	int currentStep;
+	StepSequencerData *data;
 	Listener *listener;
-	Array<StepSequencerValue> values;
 };
 
 #endif //__STEPSEQUENCER_H__

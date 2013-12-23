@@ -1,46 +1,40 @@
 #ifndef __STEPSEQUENCERVALUE_H__
 #define __STEPSEQUENCERVALUE_H__
 
-#define SEQUENCER_STEP_OFF -1
+#include "../JuceLibraryCode/JuceHeader.h"
 
 struct StepSequencerValue
 {
 public:
-	StepSequencerValue()
+	static StepSequencerValue deserialize(var serializedValue)
 	{
-		value = SEQUENCER_STEP_OFF;
+		return deserialize((int)serializedValue);
 	}
 
-	StepSequencerValue(int value)
+	static StepSequencerValue deserialize(int serializedValue)
 	{
-		this->value = value;
+		bool isSet = (serializedValue & (1 << 17)) > 0;
+		int step = (serializedValue >> 8) & 0xFF;
+		int value = serializedValue & 0xFF;
+
+		StepSequencerValue returnValue = { step, value, isSet };
+		return returnValue;
 	}
 
-	bool hasValue(void) const { return value > SEQUENCER_STEP_OFF; }
-
-	int value;
-};
-
-struct SequencerStep
-{
-	SequencerStep(int step, int value)
-		: step(step), value(value)
+	int serialize(void) 
 	{
-	}
+		int retVal = value;
+		retVal |= (step << 8);
+		if (isSet) {
+			retVal |= (1 << 17);
+		}
 
-	SequencerStep(int from)
-	{
-		step = (from >> 16) & 0xFFFF;
-		value = from & 0xFFFF;
-	}
-
-	operator int()
-	{
-		return ((step & 0xFFFF) << 16) | (value & 0xFFFF);
+		return retVal;
 	}
 
 	int step;
 	int value;
+	bool isSet;
 };
 
 #endif //__STEPSEQUENCERVALUE_H__

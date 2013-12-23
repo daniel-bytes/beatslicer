@@ -2,57 +2,54 @@
 #include "Utilities.h"
 
 StepSequencer::StepSequencer(int numSteps, int numRows, int ticksPerStep)
-	: numSteps(numSteps), numRows(numRows), ticksPerStep(ticksPerStep), currentStep(-1), listener(nullptr)
+	: data(nullptr), listener(nullptr)
 {
+	data = new StepSequencerData();
+	data->numSteps = numSteps;
+	data->numRows = numRows;
+	data->ticksPerStep = ticksPerStep;
 	configureSteps();
 }
 
 StepSequencer::~StepSequencer(void)
 {
+	delete data;
+	data = nullptr;
 }
 
 void StepSequencer::setNumSteps(int value)
 {
-	this->numSteps = value;
+	data->numSteps = value;
 	configureSteps();
 }
 
 void StepSequencer::setNumRows(int value)
 {
-	this->numRows = value;
+	data->numRows = value;
 	configureSteps();
 }
 
 void StepSequencer::setNumStepsAndRows(int steps, int rows)
 {
-	this->numSteps = steps;
-	this->numRows = rows;
+	data->numSteps = steps;
+	data->numRows = rows;
 	configureSteps();
 }
 
 void StepSequencer::setTicksPerStep(int value)
 {
-	this->ticksPerStep = value;
+	data->ticksPerStep = value;
 	configureSteps();
 }
 
-void StepSequencer::setAllValues(Array<var> *values)
+void StepSequencer::setAllValues(Array<var> *newValues)
 {
-	this->values.resize(values->size());
+	data->numSteps = newValues->size();
+	data->values.resize(newValues->size());
 
-	for (int i = 0; i < values->size(); i++) {
-		int newValue = jlimit(SEQUENCER_STEP_OFF, numRows - 1, (int)(*values)[i]);
-		this->values.set(i, newValue);
-	}
-}
-
-void StepSequencer::setValues(const Array<StepSequencerValue> &values)
-{
-	this->values.clear();
-
-	for (StepSequencerValue value : values) {
-		StepSequencerValue v = jlimit(SEQUENCER_STEP_OFF, numRows - 1, value.value);
-		this->values.add(v);
+	for (int i = 0; i < newValues->size(); i++) {
+		StepSequencerValue value = StepSequencerValue::deserialize((*newValues)[i]);
+		data->values.set(i, value);
 	}
 }
 
@@ -62,32 +59,31 @@ void StepSequencer::setListener(Listener *value)
 	configureSteps();
 }
 
-void StepSequencer::setStepValue(int step, int value)
+void StepSequencer::setStepValue(int step, StepSequencerValue value)
 {
-	step = jlimit(0, numSteps - 1, step);
-	value = jlimit(SEQUENCER_STEP_OFF, numRows - 1, value);
-	values.set(step, value);
+	data->values.set(step, value);
 }
 
 void StepSequencer::onClockStep(double ppq)
 {
-	int clockPos = (int)floor(ppq) % numSteps;
+	int clockPos = (int)floor(ppq) % data->numSteps;
 	
-	if (currentStep != clockPos) {
-		currentStep = jlimit(0, numSteps - 1, clockPos);
+	if (data->currentStep != clockPos) {
+		data->currentStep = jlimit(0, data->numSteps - 1, clockPos);
 
 		if (listener != nullptr) {
-			listener->onStepTriggered(*this, currentStep, values[currentStep]);
+			auto value = data->values[data->currentStep];
+			listener->onStepTriggered(*this, data->currentStep, value);
 		}
 	}
 }
 
 void StepSequencer::configureSteps(void)
 {
-	values.resize(numSteps);
+	data->values.resize(data->numSteps);
 
-	for (int i = 0; i < numRows; i++) {
-		StepSequencerValue value = jlimit(SEQUENCER_STEP_OFF, numRows - 1, values[i].value);
-		values.set(i, value);
+	for (int i = 0; i < data->numRows; i++) {
+		StepSequencerValue value = { i, jlimit(0, data->numRows - 1, data->values[i].value), data->values[i].isSet };
+		data->values.set(i, value);
 	}
 }

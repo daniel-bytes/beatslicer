@@ -24,9 +24,10 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	  gainLabel("", "Gain"),
 	  speedLabel("", "Speed"),
 	  //grainsLabel("", "Grains"),
-	  numSlicesLabel("", "Num Slices"),
+	  numSlicesLabel("", "Slices"),
 	  pitchLabel("", "Pitch"),
-	  filePathLabel("", "Sample: ")
+	  filePathLabel("", "Sample: "),
+	  numBarsLabel("", "Bars")
 {
 	Font labelFont(14.f, Font::FontStyleFlags::bold);
 	Font valueFont(14.f);
@@ -96,6 +97,17 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
     numSlicesLabel.attachToComponent (&numSlicesComboBox, false);
     numSlicesLabel.setFont(labelFont);
 	
+	addAndMakeVisible(&numBarsComboBox);
+	numBarsComboBox.setBounds(320, 140, 80, 20);
+	numBarsComboBox.addItem("1", 1);
+	numBarsComboBox.addItem("2", 2);
+	numBarsComboBox.addItem("3", 3);
+	numBarsComboBox.addItem("4", 4);
+	numBarsComboBox.setSelectedId(8);
+	numBarsComboBox.addListener(this);
+    numBarsLabel.attachToComponent (&numBarsComboBox, false);
+    numBarsLabel.setFont(labelFont);
+	
 	addAndMakeVisible(&directionButton);
 	directionButton.setBounds(320, 160, 80, 20);
 	directionButton.setButtonText("Reverse");
@@ -105,7 +117,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	addAndMakeVisible(waveform);
 	waveform->setBounds(20, 200, 760, 200);
 
-	sequencer = new StepSequencerControl(16, 16);
+	sequencer = new StepSequencerControl();
 	addAndMakeVisible(sequencer);
 	sequencer->setBounds(20, 420, 760, 260);
 
@@ -201,7 +213,10 @@ void GrainerAudioProcessorEditor::comboBoxChanged(ComboBox *comboBoxThatHasChang
 		int id = numSlicesComboBox.getSelectedId();
 		controller->updateParameterModel(ParameterID::Sampler_NumSlices, id);
 		waveform->setNumSlices(id);
-		sequencer->setNumStepsAndRows(id, id);
+	}
+	else if (comboBoxThatHasChanged == &numBarsComboBox) {
+		int id = numBarsComboBox.getSelectedId();
+		controller->updateParameterModel(ParameterID::Sampler_NumBars, id);
 	}
 }
 
@@ -262,13 +277,9 @@ void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var v
 	case ParameterID::Sampler_NumSlices:
 		numSlicesComboBox.setSelectedId((int)value, NotificationType::dontSendNotification);
 		waveform->setNumSlices((int)value);
-		sequencer->setNumStepsAndRows((int)value, (int)value);
-		break;
-	case ParameterID::Sequencer_AllValues:
-		sequencer->setAllValues(value.getArray());
 		break;
 	case ParameterID::Sequencer_CurrentStep:
-		sequencer->setCurrentStep((int)value);
+		sequencer->repaint();
 		break;
 	}
 }

@@ -37,6 +37,7 @@ public:
 	virtual const Array<Parameter*> getAllParameters(void) const;
 
 	virtual AudioFormatManager* getAudioFormatManager(void) { return formatManager; }
+	virtual const StepSequencerData* getSequencerData(void) const;
 
 public:
 	void processClockMessage(AudioPlayHead::CurrentPositionInfo &posInfo);
@@ -55,6 +56,8 @@ private:
 
 	// configures a new parameter, which is exposed to the host engine
 	Parameter* configurePluginParameter(ParameterID id, String name, var initialValue, float minValue, float maxValue);
+
+    Array<var> getInitialStepValues();
 
 private:
 	ScopedPointer<AudioFormatManager> formatManager;

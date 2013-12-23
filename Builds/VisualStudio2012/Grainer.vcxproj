@@ -1741,6 +1741,7 @@
     <ClInclude Include="..\..\Source\StandaloneApplicationWindow.h" />
     <ClInclude Include="..\..\Source\StepSequencer.h" />
     <ClInclude Include="..\..\Source\StepSequencerControl.h" />
+    <ClInclude Include="..\..\Source\StepSequencerData.h" />
     <ClInclude Include="..\..\Source\StepSequencerValue.h" />
     <ClInclude Include="..\..\Source\Utilities.h" />
     <ClInclude Include="..\..\Source\Wavetable.h" />
