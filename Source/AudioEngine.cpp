@@ -215,6 +215,11 @@ void AudioEngine::setParameterValue(ParameterID parameter, var value)
 		break;
 	case ParameterID::Sampler_NumBars:
 		sequencer->setNumBars((int)value);
+		{
+		double bpm = calculateBpm(sampler->getSamplerBufferSize(), sampler->getSamplerBufferSampleRate(), (int)value);
+		double test = bpm;
+		(void)test;
+		}
 		break;
 	case ParameterID::Sequencer_BeatsPerMinute:
 		break;

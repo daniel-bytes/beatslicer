@@ -40,4 +40,14 @@ inline float linearInterpolate(float *buffer, int bufferSize, float phase)
 	return value;
 }
 
+inline double calculateBpm(double totalSamples, double sampleRate, double numBars)
+{
+	double secondsPerSample = (1.0 / sampleRate);
+	double lengthOfBarInSeconds = (totalSamples * secondsPerSample) / numBars;
+	double beatPerSecond = 1.0 / (lengthOfBarInSeconds / 4.0);
+	double beatPerMinute = beatPerSecond * 60.0;
+
+	return beatPerMinute;
+}
+
 #endif //__UTILITIES_H__
