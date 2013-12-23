@@ -8,6 +8,7 @@ StepSequencer::StepSequencer(int numSteps, int numRows, int numBars)
 	data->numSteps = numSteps;
 	data->numRows = numRows;
 	data->numBars = numBars;
+	data->currentStep = 0;
 	configureSteps();
 }
 
@@ -65,7 +66,10 @@ void StepSequencer::setStepValue(int step, StepSequencerValue value)
 
 void StepSequencer::onClockStep(double ppq)
 {
-	int clockPos = (int)floor(ppq) % data->numSteps;
+	int pulse = (int)floor(ppq * 24.0);
+	int pulsesPerStep = (int)((double)(96.0 / data->numSteps) * (double)data->numBars);
+
+	int clockPos = (pulse / pulsesPerStep) % data->numSteps;
 	
 	if (data->currentStep != clockPos) {
 		data->currentStep = jlimit(0, data->numSteps - 1, clockPos);
