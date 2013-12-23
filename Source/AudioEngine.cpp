@@ -6,7 +6,7 @@
 #include "Phasor.h"
 #include "StepSequencer.h"
 
-#define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\GitHub\\Grainer\\Resources\\Drum_Break01(94BPM).wav"
+#define TEST_FILEPATH "Drum_Break01(94BPM).wav"
 
 AudioEngine::AudioEngine()
 	: controller(nullptr), mute(false)
@@ -51,12 +51,14 @@ void AudioEngine::stop()
 // Parameter configuration
 void AudioEngine::configureParameters(void)
 {
+	String path = File::getSpecialLocation(File::currentExecutableFile).getParentDirectory().getFullPathName() + "\\" + TEST_FILEPATH;
+
 	configurePluginParameter(ParameterID::Sampler_Gain, "Gain", .9f, 0.f, 1.f);
 	configurePluginParameter(ParameterID::Sampler_Speed, "Speed", 1.f, 0.f, 2.f);
 	configurePluginParameter(ParameterID::Sampler_GrainSize, "Grain", .5f, 0.f, 1.f);
 	configurePluginParameter(ParameterID::Sampler_Direction, "Direction", true, 0.f, 1.0f);
 	configurePluginParameter(ParameterID::Sampler_Pitch, "Pitch", 0.f, -24.f, 24.f);
-	configureStandardParameter(ParameterID::Sampler_FilePath, "File Path", TEST_FILEPATH);
+	configureStandardParameter(ParameterID::Sampler_FilePath, "File Path", path);
 	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
 	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
 	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);

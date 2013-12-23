@@ -1770,7 +1770,9 @@
     <ResourceCompile Include=".\resources.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Media Include="..\..\Resources\Drum_Break01(94BPM).wav" />
+    <Content Include="..\..\Resources\Drum_Break01(94BPM).wav">
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
