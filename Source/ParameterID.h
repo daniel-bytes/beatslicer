@@ -19,6 +19,7 @@ enum class ParameterID
 	Sampler_Phase = 106,
 	Sampler_NumSlices = 107,
 	Sampler_NumBars = 108,
+	Sampler_FixedPitch = 109,
 	
 	Sequencer_StepChange = 201,
 	Sequencer_CurrentStep = 202,

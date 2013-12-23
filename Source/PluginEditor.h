@@ -51,7 +51,7 @@ public:
 
 private:
 	Slider gainSlider, speedSlider, pitchSlider;
-	ToggleButton directionButton;
+	ToggleButton directionButton, offsetPitchButton;
 	TextButton selectSampleButton, resetSlicesButton;
 	ComboBox numSlicesComboBox, numBarsComboBox;
 	Label gainLabel, speedLabel, numSlicesLabel, pitchLabel, filePathLabel, filePathValueLabel, numBarsLabel;

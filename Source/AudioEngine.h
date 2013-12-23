@@ -60,6 +60,8 @@ private:
 
     Array<var> getInitialStepValues();
 
+	void updateBpmOffset(void);
+
 private:
 	ScopedPointer<AudioFormatManager> formatManager;
 

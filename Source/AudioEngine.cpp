@@ -62,6 +62,7 @@ void AudioEngine::configureParameters(void)
 	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
 	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 16);
 	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);
+	configureStandardParameter(ParameterID::Sampler_FixedPitch, "Fixed Pitch", true);
 	
 	configureStandardParameter(ParameterID::Sequencer_CurrentValue, "Seq Value", 0);
 	configureStandardParameter(ParameterID::Sequencer_BeatsPerMinute, "BPM", 94.0);
@@ -214,18 +215,11 @@ void AudioEngine::setParameterValue(ParameterID parameter, var value)
 		phasor->setCurrentPhase((float)param->getValue() * sampler->getSamplerBufferSize());
 		break;
 	case ParameterID::Sampler_NumBars:
-		{
-			sequencer->setNumBars((int)value);
-
-			if (sampler != nullptr && phasor != nullptr && controller != nullptr) {
-				double samplebpm = calculateBpm(sampler->getSamplerBufferSize(), sampler->getSamplerBufferSampleRate(), (int)value);
-				double clockbpm = controller->getBeatsPerMinute();
-
-				if (samplebpm > 0) {
-					phasor->setBpmOffset((float)(clockbpm / samplebpm));
-				}
-			}
-		}
+		sequencer->setNumBars((int)value);
+		updateBpmOffset();
+		break;
+	case ParameterID::Sampler_FixedPitch:
+		updateBpmOffset();
 		break;
 	case ParameterID::Sequencer_BeatsPerMinute:
 		break;
@@ -274,21 +268,31 @@ void AudioEngine::processClockMessage(AudioPlayHead::CurrentPositionInfo &posInf
 {
 	if (posInfo.bpm != controller->getBeatsPerMinute()) {
 		this->setParameterValue(ParameterID::Sequencer_BeatsPerMinute, posInfo.bpm);
-
-		if (sampler != nullptr && phasor != nullptr) {
-			double numBars = (int)getParameterValue(ParameterID::Sampler_NumBars);
-			double samplebpm = calculateBpm(sampler->getSamplerBufferSize(), sampler->getSamplerBufferSampleRate(), numBars);
-
-			if (samplebpm > 0) {
-				phasor->setBpmOffset((float)(posInfo.bpm / samplebpm));
-			}
-		}
+		updateBpmOffset();
 	}
 
 	this->controller->setSequencerParameters(posInfo.isPlaying, posInfo.ppqPosition, posInfo.bpm);
 
 	if (posInfo.isPlaying) {
 		this->sequencer->onClockStep(posInfo.ppqPosition);
+	}
+}
+
+void AudioEngine::updateBpmOffset(void)
+{
+	if (controller != nullptr && sampler != nullptr && phasor != nullptr) {
+		bool fixPitch = (bool)getParameterValue(ParameterID::Sampler_FixedPitch);
+
+		if (fixPitch) {
+			double numBars = (int)getParameterValue(ParameterID::Sampler_NumBars);
+			double samplebpm = calculateBpm(sampler->getSamplerBufferSize(), sampler->getSamplerBufferSampleRate(), numBars);
+			double currentbpm = controller->getBeatsPerMinute();
+
+			phasor->setBpmOffset((float)(currentbpm / samplebpm));
+		}
+		else {
+			phasor->setBpmOffset(1.0f);
+		}
 	}
 }
 

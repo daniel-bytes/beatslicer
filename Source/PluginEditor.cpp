@@ -113,6 +113,11 @@ BeatSlicerAudioProcessorEditor::BeatSlicerAudioProcessorEditor(BeatSlicerAudioPr
 	directionButton.setButtonText("Reverse");
 	directionButton.addListener(this);
 
+	addAndMakeVisible(&offsetPitchButton);
+	offsetPitchButton.setBounds(500, 80, 80, 20);
+	offsetPitchButton.setButtonText("Pitch Shift");
+	offsetPitchButton.addListener(this);
+
 	addAndMakeVisible(&resetSlicesButton);
 	resetSlicesButton.setButtonText("Reset");
 	resetSlicesButton.setTooltip("Reset slices to default");
@@ -205,6 +210,14 @@ void BeatSlicerAudioProcessorEditor::buttonStateChanged(Button* button)
 			controller->updateParameterModel(ParameterID::Sampler_Direction, isReverse ? false : true);
 		}
 	}
+	else if (button == &offsetPitchButton) {
+		bool isOffset = button->getToggleState();
+		bool wasOffset = (bool)controller->getParameterValue(ParameterID::Sampler_FixedPitch);
+
+		if (isOffset != wasOffset) {
+			controller->updateParameterModel(ParameterID::Sampler_FixedPitch, isOffset);
+		}
+	}
 }
 
 void BeatSlicerAudioProcessorEditor::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
@@ -259,6 +272,9 @@ void BeatSlicerAudioProcessorEditor::setParameterValue(ParameterID parameter, va
 		break;
 	case ParameterID::Sampler_Pitch:
 		pitchSlider.setValue((float)value, NotificationType::dontSendNotification);
+		break;
+	case ParameterID::Sampler_FixedPitch:
+		offsetPitchButton.setToggleState((bool)value, NotificationType::dontSendNotification);
 		break;
 	case ParameterID::Sampler_FilePath:
 		{
