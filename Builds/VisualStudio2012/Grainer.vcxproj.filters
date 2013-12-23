@@ -304,6 +304,9 @@
     <Filter Include="Libs\Juce Modules\juce_audio_util">
       <UniqueIdentifier>{dc3a25c9-981d-4f5b-8d63-77d6b526eea5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{830ccb7f-d1c9-4ccc-a7c7-07d7dd3afaca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -2913,5 +2916,10 @@
     <ResourceCompile Include=".\resources.rc">
       <Filter>Libs\Juce Library Code</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\..\Resources\Drum_Break01(94BPM).wav">
+      <Filter>Resources</Filter>
+    </Media>
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ struct StepSequencerData
 {
 	int numSteps;
 	int numRows;
-	int ticksPerStep;
+	int numBars;
 	int currentStep;
 	Array<StepSequencerValue> values;
 };

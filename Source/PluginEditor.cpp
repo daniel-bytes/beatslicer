@@ -103,7 +103,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
 	numBarsComboBox.addItem("2", 2);
 	numBarsComboBox.addItem("3", 3);
 	numBarsComboBox.addItem("4", 4);
-	numBarsComboBox.setSelectedId(8);
+	numBarsComboBox.setSelectedId(2);
 	numBarsComboBox.addListener(this);
     numBarsLabel.attachToComponent (&numBarsComboBox, false);
     numBarsLabel.setFont(labelFont);
@@ -262,7 +262,8 @@ void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var v
 		break;
 	case ParameterID::Sampler_FilePath:
 		{
-			File file((String)value);
+			String path = value;
+			File file = path.contains(":") ? File(path) : File::getCurrentWorkingDirectory().getChildFile(path);
 			
 			if (file.exists()) {
 				waveform->setSource(new FileInputSource(file));
@@ -277,6 +278,9 @@ void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var v
 	case ParameterID::Sampler_NumSlices:
 		numSlicesComboBox.setSelectedId((int)value, NotificationType::dontSendNotification);
 		waveform->setNumSlices((int)value);
+		break;
+	case ParameterID::Sampler_NumBars:
+		numBarsComboBox.setSelectedId((int)value, NotificationType::dontSendNotification);
 		break;
 	case ParameterID::Sequencer_CurrentStep:
 		sequencer->repaint();

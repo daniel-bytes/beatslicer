@@ -6,7 +6,7 @@
 #include "Phasor.h"
 #include "StepSequencer.h"
 
-#define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\Samples\\musicradar-drum-break-samples\\Clean Breaks\\Drum_Break01(94BPM).wav"
+#define TEST_FILEPATH "C:\\Users\\Daniel\\Documents\\GitHub\\Grainer\\Resources\\Drum_Break01(94BPM).wav"
 
 AudioEngine::AudioEngine()
 	: controller(nullptr)
@@ -59,7 +59,7 @@ void AudioEngine::configureParameters(void)
 	configureStandardParameter(ParameterID::Sampler_FilePath, "File Path", TEST_FILEPATH);
 	configureStandardParameter(ParameterID::Sampler_Phase, "Phase", 0.f);
 	configureStandardParameter(ParameterID::Sampler_NumSlices, "Slices", 8);
-	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 1);
+	configureStandardParameter(ParameterID::Sampler_NumBars, "Bars", 2);
 	
 	configureStandardParameter(ParameterID::Sequencer_BeatsPerMinute, "BPM", 120.0f);
 	configureStandardParameter(ParameterID::Sequencer_CurrentStep, "Current Step", 0);
@@ -104,7 +104,8 @@ Array<var> AudioEngine::getInitialStepValues()
 	int numSteps = (int)getParameterValue(ParameterID::Sampler_NumSlices);
 
 	for (int i = 0; i < numSteps; i++) {
-		values.add(i);
+		StepSequencerValue value = { i, i, 1 };
+		values.add(value.serialize());
 	}
 
 	return values;
@@ -203,6 +204,8 @@ void AudioEngine::setParameterValue(ParameterID parameter, var value)
 		phasor->setCurrentPhase((float)param->getValue() * sampler->getSamplerBufferSize());
 		break;
 	case ParameterID::Sampler_NumBars:
+		sequencer->setNumBars((int)value);
+		break;
 	case ParameterID::Sequencer_BeatsPerMinute:
 		break;
 	case ParameterID::Sampler_NumSlices:

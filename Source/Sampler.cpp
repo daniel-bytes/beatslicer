@@ -35,7 +35,7 @@ void Sampler::loadFile(AudioFormatManager *formatManager, String filePath)
 	this->bufferSampleRate = 0;
 	this->filePath = filePath;
 
-	File file(filePath);
+	File file = filePath.contains(":") ? File(filePath) : File::getCurrentWorkingDirectory().getChildFile(filePath);
 	this->sampleBuffer = nullptr;
 	this->reader = nullptr;
 

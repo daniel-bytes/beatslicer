@@ -1,13 +1,13 @@
 #include "StepSequencer.h"
 #include "Utilities.h"
 
-StepSequencer::StepSequencer(int numSteps, int numRows, int ticksPerStep)
+StepSequencer::StepSequencer(int numSteps, int numRows, int numBars)
 	: data(nullptr), listener(nullptr)
 {
 	data = new StepSequencerData();
 	data->numSteps = numSteps;
 	data->numRows = numRows;
-	data->ticksPerStep = ticksPerStep;
+	data->numBars = numBars;
 	configureSteps();
 }
 
@@ -36,10 +36,9 @@ void StepSequencer::setNumStepsAndRows(int steps, int rows)
 	configureSteps();
 }
 
-void StepSequencer::setTicksPerStep(int value)
+void StepSequencer::setNumBars(int value)
 {
-	data->ticksPerStep = value;
-	configureSteps();
+	data->numBars = value;
 }
 
 void StepSequencer::setAllValues(Array<var> *newValues)

@@ -8,7 +8,7 @@
 class StepSequencer
 {
 public:
-	StepSequencer(int numSteps, int numRows, int ticksPerStep);
+	StepSequencer(int numSteps, int numRows, int numBars);
 	virtual ~StepSequencer(void);
 
 public:
@@ -21,7 +21,7 @@ public:
 	void setNumSteps(int value);
 	void setNumRows(int value);
 	void setNumStepsAndRows(int steps, int rows);
-	void setTicksPerStep(int value);
+	void setNumBars(int value);
 	void setStepValue(int step, StepSequencerValue value);
 	void setAllValues(Array<var> *newValues);
 	
