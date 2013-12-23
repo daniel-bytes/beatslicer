@@ -14,75 +14,75 @@
 #include "ApplicationController.h"
 
 //==============================================================================
-GrainerAudioProcessor::GrainerAudioProcessor()
+BeatSlicerAudioProcessor::BeatSlicerAudioProcessor()
 {
 	model = new AudioEngine();
 
 	controller = new ApplicationController(
-							std::bind(&GrainerAudioProcessor::getModel, this),
-							std::bind(&GrainerAudioProcessor::getView, this));
+							std::bind(&BeatSlicerAudioProcessor::getModel, this),
+							std::bind(&BeatSlicerAudioProcessor::getView, this));
 }
 
-GrainerAudioProcessor::~GrainerAudioProcessor()
+BeatSlicerAudioProcessor::~BeatSlicerAudioProcessor()
 {
 	model = nullptr;
 	controller = nullptr;
 }
 
 //==============================================================================
-const String GrainerAudioProcessor::getName() const
+const String BeatSlicerAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-int GrainerAudioProcessor::getNumParameters()
+int BeatSlicerAudioProcessor::getNumParameters()
 {
 	return model->getNumPluginParameters();
 }
 
-float GrainerAudioProcessor::getParameter (int index)
+float BeatSlicerAudioProcessor::getParameter (int index)
 {
 	return model->getPluginParameterValue(index);
 }
 
-void GrainerAudioProcessor::setParameter (int index, float newValue)
+void BeatSlicerAudioProcessor::setParameter (int index, float newValue)
 {
 	model->setPluginParameterValue(index, newValue);
 }
 
-const String GrainerAudioProcessor::getParameterName (int index)
+const String BeatSlicerAudioProcessor::getParameterName (int index)
 {
 	return model->getPluginParameterName(index);
 }
 
-const String GrainerAudioProcessor::getParameterText (int index)
+const String BeatSlicerAudioProcessor::getParameterText (int index)
 {
 	return model->getPluginParameterDisplay(index);
 }
 
-const String GrainerAudioProcessor::getInputChannelName (int channelIndex) const
+const String BeatSlicerAudioProcessor::getInputChannelName (int channelIndex) const
 {
     return String (channelIndex + 1);
 }
 
-const String GrainerAudioProcessor::getOutputChannelName (int channelIndex) const
+const String BeatSlicerAudioProcessor::getOutputChannelName (int channelIndex) const
 {
     return String (channelIndex + 1);
 }
 
-bool GrainerAudioProcessor::isInputChannelStereoPair (int index) const
+bool BeatSlicerAudioProcessor::isInputChannelStereoPair (int index) const
 {
 	(void)index;
     return true;
 }
 
-bool GrainerAudioProcessor::isOutputChannelStereoPair (int index) const
+bool BeatSlicerAudioProcessor::isOutputChannelStereoPair (int index) const
 {
 	(void)index;
     return true;
 }
 
-bool GrainerAudioProcessor::acceptsMidi() const
+bool BeatSlicerAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -91,7 +91,7 @@ bool GrainerAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool GrainerAudioProcessor::producesMidi() const
+bool BeatSlicerAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -100,57 +100,57 @@ bool GrainerAudioProcessor::producesMidi() const
    #endif
 }
 
-bool GrainerAudioProcessor::silenceInProducesSilenceOut() const
+bool BeatSlicerAudioProcessor::silenceInProducesSilenceOut() const
 {
     return false;
 }
 
-double GrainerAudioProcessor::getTailLengthSeconds() const
+double BeatSlicerAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int GrainerAudioProcessor::getNumPrograms()
+int BeatSlicerAudioProcessor::getNumPrograms()
 {
     return 0;
 }
 
-int GrainerAudioProcessor::getCurrentProgram()
+int BeatSlicerAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void GrainerAudioProcessor::setCurrentProgram (int index)
+void BeatSlicerAudioProcessor::setCurrentProgram (int index)
 {
 	(void)index;
 }
 
-const String GrainerAudioProcessor::getProgramName (int index)
+const String BeatSlicerAudioProcessor::getProgramName (int index)
 {
 	(void)index;
     return String::empty;
 }
 
-void GrainerAudioProcessor::changeProgramName (int index, const String& newName)
+void BeatSlicerAudioProcessor::changeProgramName (int index, const String& newName)
 {
 	(void)index;
 	(void)newName;
 }
 
 //==============================================================================
-void GrainerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void BeatSlicerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
 	(void)samplesPerBlock;
 	// Initialize model and wire up to controller
 	model->initialize(this->controller, sampleRate);
 }
 
-void GrainerAudioProcessor::releaseResources()
+void BeatSlicerAudioProcessor::releaseResources()
 {
 	model->stop();
 }
 
-void GrainerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void BeatSlicerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
 	// Handle clock & midi
     AudioPlayHead::CurrentPositionInfo posInfo;
@@ -175,25 +175,25 @@ void GrainerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 }
 
 //==============================================================================
-bool GrainerAudioProcessor::hasEditor() const
+bool BeatSlicerAudioProcessor::hasEditor() const
 {
 	return true;
 }
 
-AudioProcessorEditor* GrainerAudioProcessor::createEditor()
+AudioProcessorEditor* BeatSlicerAudioProcessor::createEditor()
 {
-    auto view = new GrainerAudioProcessorEditor(this);
+    auto view = new BeatSlicerAudioProcessorEditor(this);
 	view->initialize(this->controller);
 
 	return view;
 }
 
-ApplicationModel* GrainerAudioProcessor::getModel(void) 
+ApplicationModel* BeatSlicerAudioProcessor::getModel(void) 
 {
 	return this->model;
 }
 
-ApplicationView* GrainerAudioProcessor::getView(void)
+ApplicationView* BeatSlicerAudioProcessor::getView(void)
 {
 	auto editor = this->getActiveEditor();
 
@@ -205,7 +205,7 @@ ApplicationView* GrainerAudioProcessor::getView(void)
 }
 
 //==============================================================================
-void GrainerAudioProcessor::getStateInformation (MemoryBlock& destData)
+void BeatSlicerAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     // Create an outer XML element..
     XmlElement xml("GrainrSettings");
@@ -215,7 +215,7 @@ void GrainerAudioProcessor::getStateInformation (MemoryBlock& destData)
     copyXmlToBinary(xml, destData);
 }
 
-void GrainerAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void BeatSlicerAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
 	ScopedPointer<XmlElement> xml(getXmlFromBinary (data, sizeInBytes));
 
@@ -229,5 +229,5 @@ void GrainerAudioProcessor::setStateInformation (const void* data, int sizeInByt
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new GrainerAudioProcessor();
+    return new BeatSlicerAudioProcessor();
 }

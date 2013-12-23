@@ -18,7 +18,7 @@
 #define NUM_SLICES 4
 
 //==============================================================================
-GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* ownerFilter)
+BeatSlicerAudioProcessorEditor::BeatSlicerAudioProcessorEditor(BeatSlicerAudioProcessor* ownerFilter)
     : AudioProcessorEditor (ownerFilter), 
 	  controller(nullptr),
 	  gainLabel("", "Gain"),
@@ -130,7 +130,7 @@ GrainerAudioProcessorEditor::GrainerAudioProcessorEditor(GrainerAudioProcessor* 
     setSize (800, 700);
 }
 
-GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor(void)
+BeatSlicerAudioProcessorEditor::~BeatSlicerAudioProcessorEditor(void)
 {
 	if (this->controller != nullptr) {
 		this->controller->endUITimer();
@@ -138,7 +138,7 @@ GrainerAudioProcessorEditor::~GrainerAudioProcessorEditor(void)
 	this->waveform = nullptr;
 }
 
-void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
+void BeatSlicerAudioProcessorEditor::initialize(ApplicationController *controller)
 {
 	this->controller = controller;
 
@@ -158,12 +158,12 @@ void GrainerAudioProcessorEditor::initialize(ApplicationController *controller)
 
 
 //==============================================================================
-void GrainerAudioProcessorEditor::paint(Graphics &g)
+void BeatSlicerAudioProcessorEditor::paint(Graphics &g)
 {
     g.fillAll(Colours::white);
 }
 
-void GrainerAudioProcessorEditor::buttonClicked(Button *button)
+void BeatSlicerAudioProcessorEditor::buttonClicked(Button *button)
 {
 	jassert(controller != nullptr);
 
@@ -193,7 +193,7 @@ void GrainerAudioProcessorEditor::buttonClicked(Button *button)
 	}
 }
 
-void GrainerAudioProcessorEditor::buttonStateChanged(Button* button)
+void BeatSlicerAudioProcessorEditor::buttonStateChanged(Button* button)
 {
 	jassert(controller != nullptr);
 
@@ -207,7 +207,7 @@ void GrainerAudioProcessorEditor::buttonStateChanged(Button* button)
 	}
 }
 
-void GrainerAudioProcessorEditor::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
+void BeatSlicerAudioProcessorEditor::comboBoxChanged(ComboBox *comboBoxThatHasChanged)
 {
 	if (comboBoxThatHasChanged == &numSlicesComboBox) {
 		int id = numSlicesComboBox.getSelectedId();
@@ -220,7 +220,7 @@ void GrainerAudioProcessorEditor::comboBoxChanged(ComboBox *comboBoxThatHasChang
 	}
 }
 
-void GrainerAudioProcessorEditor::sliderValueChanged (Slider* slider)
+void BeatSlicerAudioProcessorEditor::sliderValueChanged (Slider* slider)
 {
 	jassert(controller != nullptr);
 
@@ -235,11 +235,11 @@ void GrainerAudioProcessorEditor::sliderValueChanged (Slider* slider)
 	}*/
 }
 
-void GrainerAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* /*source*/)
+void BeatSlicerAudioProcessorEditor::changeListenerCallback (ChangeBroadcaster* /*source*/)
 {
 }
 
-void GrainerAudioProcessorEditor::setParameterValue(ParameterID parameter, var value)
+void BeatSlicerAudioProcessorEditor::setParameterValue(ParameterID parameter, var value)
 {
 	switch(parameter)
 	{

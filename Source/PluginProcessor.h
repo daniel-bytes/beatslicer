@@ -21,13 +21,13 @@ class ApplicationView;
 //==============================================================================
 /**
 */
-class GrainerAudioProcessor  
+class BeatSlicerAudioProcessor  
 	: public AudioProcessor
 {
 public:
     //==============================================================================
-    GrainerAudioProcessor();
-    ~GrainerAudioProcessor();
+    BeatSlicerAudioProcessor();
+    ~BeatSlicerAudioProcessor();
 
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock);
@@ -80,7 +80,7 @@ private:
 
 private:
     //==============================================================================
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GrainerAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BeatSlicerAudioProcessor)
 };
 
 #endif  // PLUGINPROCESSOR_H_INCLUDED

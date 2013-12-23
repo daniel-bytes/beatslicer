@@ -14,7 +14,7 @@ public:
 	StandaloneApplicationWindow()
 		: DocumentWindow("Grainr", Colours::white, DocumentWindow::TitleBarButtons::allButtons, true), editor(nullptr)
 	{
-		processor = new GrainerAudioProcessor();
+		processor = new BeatSlicerAudioProcessor();
 
 		//selector = new AudioDeviceSelectorComponent(deviceManager, 0, 2, 0, 2, false, false, true, false);
 		//setContentNonOwned(selector, false);
@@ -79,7 +79,7 @@ public:
 	{
 		processor->setPlayConfigDetails(2, 2, device->getSampleRate(0), device->getDefaultBufferSize());
 		processor->prepareToPlay(device->getSampleRate(0), device->getDefaultBufferSize());
-		editor = (GrainerAudioProcessorEditor*)processor->createEditorIfNeeded();
+		editor = (BeatSlicerAudioProcessorEditor*)processor->createEditorIfNeeded();
 
 		setContentNonOwned(editor, false);
 		editor->setVisible(true);
@@ -92,8 +92,8 @@ public:
 	}
 private:
 	AudioDeviceManager deviceManager;
-	ScopedPointer<GrainerAudioProcessor> processor;
-	GrainerAudioProcessorEditor *editor;
+	ScopedPointer<BeatSlicerAudioProcessor> processor;
+	BeatSlicerAudioProcessorEditor *editor;
 	ScopedPointer<AudioDeviceSelectorComponent> selector;
 };
 #endif //STANDALONE_VERSION

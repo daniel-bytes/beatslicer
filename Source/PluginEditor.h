@@ -22,7 +22,7 @@ class StepSequencerControl;
 //==============================================================================
 /**
 */
-class GrainerAudioProcessorEditor  
+class BeatSlicerAudioProcessorEditor  
 	: public AudioProcessorEditor,
 	  public ApplicationView,
 	  public juce::Slider::Listener,
@@ -31,8 +31,8 @@ class GrainerAudioProcessorEditor
 	  public juce::ChangeListener
 {
 public:
-    GrainerAudioProcessorEditor (GrainerAudioProcessor* ownerFilter);
-    ~GrainerAudioProcessorEditor();
+    BeatSlicerAudioProcessorEditor (BeatSlicerAudioProcessor* ownerFilter);
+    ~BeatSlicerAudioProcessorEditor();
 
     //==============================================================================
     // This is just a standard Juce paint method...
