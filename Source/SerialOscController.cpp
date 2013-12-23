@@ -32,6 +32,54 @@ SerialOscController::~SerialOscController(void)
 	devices.clear();
 }
 
+void SerialOscController::start(Listener *listener)
+{
+	this->listener = listener;
+
+	if (listener == nullptr || socket != nullptr) {
+		return;
+	}
+	
+	for (int i = 0; i < 1000; i++) {
+		listenPort = SERIALOSC_CONTROLLER_PORT + i;
+
+		try {
+			socket = new UdpListeningReceiveSocket(
+					IpEndpointName( IpEndpointName::ANY_ADDRESS, listenPort ),
+					this);
+
+			break;
+		}
+		catch(std::runtime_error) {
+			// try next port
+			socket = nullptr;
+		}
+	}
+
+	if (socket != nullptr) {
+		startThread();
+	
+		sendDeviceQueryMessage();
+		sendDeviceNotifyMessage();
+	}
+}
+
+void SerialOscController::stop(void)
+{
+	if (socket != nullptr) {
+		socket->AsynchronousBreak();
+		waitForThreadToExit(1000);
+		socket = nullptr;
+	}
+}
+	
+void SerialOscController::run(void)
+{
+	if (socket != nullptr) {
+		socket->Run();
+	}
+}
+
 void SerialOscController::ProcessMessage(const osc::ReceivedMessage& m, const IpEndpointName& remoteEndpoint)
 {
 	(void)remoteEndpoint;
@@ -107,54 +155,6 @@ void SerialOscController::ProcessMessage(const osc::ReceivedMessage& m, const Ip
 	}
 	catch(osc::WrongArgumentTypeException &exc) {
 		printf("WrongArgumentTypeException: %s", exc.what());
-	}
-}
-
-void SerialOscController::start(Listener *listener)
-{
-	this->listener = listener;
-
-	if (listener == nullptr || socket != nullptr) {
-		return;
-	}
-	
-	for (int i = 0; i < 1000; i++) {
-		listenPort = SERIALOSC_CONTROLLER_PORT + i;
-
-		try {
-			socket = new UdpListeningReceiveSocket(
-					IpEndpointName( IpEndpointName::ANY_ADDRESS, listenPort ),
-					this);
-
-			break;
-		}
-		catch(std::runtime_error) {
-			// try next port
-			socket = nullptr;
-		}
-	}
-
-	if (socket != nullptr) {
-		startThread();
-	
-		sendDeviceQueryMessage();
-		sendDeviceNotifyMessage();
-	}
-}
-
-void SerialOscController::stop(void)
-{
-	if (socket != nullptr) {
-		socket->AsynchronousBreak();
-		waitForThreadToExit(1000);
-		socket = nullptr;
-	}
-}
-	
-void SerialOscController::run(void)
-{
-	if (socket != nullptr) {
-		socket->Run();
 	}
 }
 
@@ -259,6 +259,46 @@ void SerialOscController::sendDeviceLedCommand(int x, int y, bool state)
 				<< x
 				<< y
 				<< (state ? 1 : 0)
+				<< osc::EndMessage
+			<< osc::EndBundle;
+    
+		transmitSocket.Send( p.Data(), p.Size() );
+	}
+}
+
+void SerialOscController::sendDeviceLedMapCommand(int xOffset, int yOffset, Array<int> values)
+{
+	if (values.size() < 8) {
+		return;
+	}
+
+	sendDeviceLedMapCommand(xOffset, yOffset, values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]);
+}
+
+void SerialOscController::sendDeviceLedMapCommand(int xOffset, int yOffset, int row0, int row1, int row2, int row3, int row4, int row5, int row6, int row7)
+{
+	HashMap<String, MonomeDevice*>::Iterator iter(devices);
+
+	while (iter.next()) {
+		auto device = iter.getValue();
+
+		UdpTransmitSocket transmitSocket( IpEndpointName( SERIALOSC_ADDRESS, device->port ) );
+		char buffer[OSC_BUFFER_SIZE];
+		osc::OutboundPacketStream p( buffer, OSC_BUFFER_SIZE );
+		String address = (device->prefix + "/grid/led/map");
+
+		p << osc::BeginBundleImmediate
+			<< osc::BeginMessage( address.toUTF8() )
+				<< xOffset
+				<< yOffset
+				<< row0
+				<< row1
+				<< row2
+				<< row3
+				<< row4
+				<< row5
+				<< row6
+				<< row7
 				<< osc::EndMessage
 			<< osc::EndBundle;
     

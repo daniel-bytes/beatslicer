@@ -6,6 +6,7 @@
 #include "SerialOscController.h"
 
 class UdpListeningReceiveSocket;
+class ApplicationController;
 
 class MonomeControl
 	: public ApplicationView,
@@ -16,6 +17,8 @@ public:
 	~MonomeControl(void);
 
 public:
+	void initialize(ApplicationController *controller);
+	void repaint(void);
 	virtual void setParameterValue(ParameterID parameter, var value);
 
 protected:
@@ -23,6 +26,7 @@ protected:
 
 private:
 	ScopedPointer<SerialOscController> serialosc;
+	ApplicationController *controller;
 };
 
 #endif //__MONOMECONTROL_H__

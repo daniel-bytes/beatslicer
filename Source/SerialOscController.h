@@ -28,6 +28,8 @@ public:
 	void start(Listener *listener);
 	void stop(void);
 
+	int getDeviceCount(void) const { return devices.size(); }
+
 public:
 	void sendDeviceQueryMessage(void);
 	void sendDeviceNotifyMessage(void);
@@ -35,6 +37,8 @@ public:
 	void sendDevicePortMessage(int port);
 	void sendDevicePrefixMessage(int port);
 	void sendDeviceLedCommand(int x, int y, bool state);
+	void sendDeviceLedMapCommand(int xOffset, int yOffset, Array<int> values);
+	void sendDeviceLedMapCommand(int xOffset, int yOffset, int row0, int row1, int row2, int row3, int row4, int row5, int row6, int row7);
 
 protected:
 	virtual void run(void);

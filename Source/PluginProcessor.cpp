@@ -145,6 +145,7 @@ void BeatSlicerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerB
 	(void)samplesPerBlock;
 	// Initialize model and wire up to controller
 	model->initialize(this->controller, sampleRate);
+	monomeView->initialize(this->controller);
 }
 
 void BeatSlicerAudioProcessor::releaseResources()
