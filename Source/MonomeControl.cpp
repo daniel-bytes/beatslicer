@@ -23,7 +23,7 @@ void MonomeControl::initialize(ApplicationController *controller)
 	repaint();
 }
 
-void MonomeControl::repaint(void)
+void MonomeControl::repaint()
 {	
 	if (serialosc->getDeviceCount() == 0) {
 		return;
@@ -55,7 +55,6 @@ void MonomeControl::setParameterValue(ParameterID parameter, var value)
 	{
 	case ParameterID::Sequencer_StepChange:
 	case ParameterID::Sequencer_CurrentStep:
-	case ParameterID::Sequencer_CurrentValue:
 		repaint();
 		break;
 	}

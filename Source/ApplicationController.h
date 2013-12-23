@@ -32,7 +32,7 @@ public:
 	ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<Array<ApplicationView*>()> viewFetch);
 	~ApplicationController();
 
-	void beginUITimer(void) { this->startTimer(20); }
+	void beginUITimer(void) { this->startTimer(100); }
 	void endUITimer(void) { this->stopTimer(); }
 
 public:

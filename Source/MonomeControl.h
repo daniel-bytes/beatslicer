@@ -18,7 +18,7 @@ public:
 
 public:
 	void initialize(ApplicationController *controller);
-	void repaint(void);
+	void repaint();
 	virtual void setParameterValue(ParameterID parameter, var value);
 
 protected:
