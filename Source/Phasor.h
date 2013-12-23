@@ -14,6 +14,7 @@ public:
 	void setDirection(bool value);
 	void setBufferSize(int value, double bufferSampleRate);
 	void setCurrentPhase(float value);
+	void setBpmOffset(float value);
 	
 	float getCurrentPhase(void) const { return phase; }
 	int getBufferSize(void) const { return bufferSize; }
@@ -24,6 +25,7 @@ private:
 protected:
 	float sampleRate;
 	float playbackRate;
+	float bpmOffset;
 	bool direction;
 	int bufferSize;
 	float bufferSampleRate;

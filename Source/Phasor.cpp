@@ -8,7 +8,8 @@ Phasor::Phasor()
 	  bufferSize(0),
 	  bufferSampleRate(0),
 	  phase(0),
-	  increment(0)
+	  increment(0),
+	  bpmOffset(1.0f)
 {
 }
 
@@ -42,6 +43,12 @@ void Phasor::setBufferSize(int value, double bufferSampleRate)
 	this->initialize();
 }
 
+void Phasor::setBpmOffset(float value)
+{
+	this->bpmOffset = value;
+	this->initialize();
+}
+
 float Phasor::calculateNextPhase()
 {
 	if ((phase += increment) >= (float)bufferSize) {
@@ -65,5 +72,5 @@ void Phasor::initialize() {
 	float frequencyMultiplier = (sampleRate / maxSamples);
 	float sampleRateCorrection = this->sampleRate / this->bufferSampleRate;
 
-	this->increment = (((secondsPerSample * speedMultiplier) * frequencyMultiplier) * sampleRateCorrection) * maxSamples;
+	this->increment = ((((secondsPerSample * speedMultiplier) * frequencyMultiplier) * sampleRateCorrection) * maxSamples) * bpmOffset;
 }
