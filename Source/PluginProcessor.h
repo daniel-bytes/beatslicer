@@ -17,6 +17,7 @@ class AudioEngine;
 class ApplicationController;
 class ApplicationModel;
 class ApplicationView;
+class MonomeControl;
 
 //==============================================================================
 /**
@@ -74,6 +75,7 @@ public:
 private:
 	ScopedPointer<ApplicationController> controller;
 	ScopedPointer<AudioEngine> model;
+	ScopedPointer<MonomeControl> monomeView;
 
 	ApplicationModel* getModel(void);
 	Array<ApplicationView*> getViews(void);

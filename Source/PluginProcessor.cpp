@@ -12,11 +12,13 @@
 #include "PluginEditor.h"
 #include "AudioEngine.h"
 #include "ApplicationController.h"
+#include "MonomeControl.h"
 
 //==============================================================================
 BeatSlicerAudioProcessor::BeatSlicerAudioProcessor()
 {
 	model = new AudioEngine();
+	monomeView = new MonomeControl();
 
 	controller = new ApplicationController(
 							std::bind(&BeatSlicerAudioProcessor::getModel, this),
@@ -196,6 +198,8 @@ ApplicationModel* BeatSlicerAudioProcessor::getModel(void)
 Array<ApplicationView*> BeatSlicerAudioProcessor::getViews(void)
 {
 	Array<ApplicationView*> views;
+
+	views.add(monomeView);
 
 	auto editor = this->getActiveEditor();
 

@@ -22,6 +22,7 @@ ApplicationController::ApplicationController(std::function<ApplicationModel*()> 
 	  isPlaying(false), 
 	  bpm(120.0),
 	  playbackPosition(0), 
+	  playbackValue(0),
 	  sequencerPosition(0), 
 	  sequencerPositionChanged(false)
 {

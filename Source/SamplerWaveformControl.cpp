@@ -3,7 +3,8 @@
 
 SamplerWaveformControl::SamplerWaveformControl(int numSlices)
 	: Component(),
-	  numSlices(numSlices)
+	  numSlices(numSlices),
+	  currentSlice(0)
 {
 }
 

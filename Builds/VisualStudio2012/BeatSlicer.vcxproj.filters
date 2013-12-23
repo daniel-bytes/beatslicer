@@ -1449,9 +1449,6 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_utils\juce_audio_utils.cpp">
       <Filter>Libs\Juce Library Code</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\StandaloneApplication.cpp">
-      <Filter>Source\GUI</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\VST\juce_VST_Wrapper.cpp">
       <Filter>Libs\Juce Library Code</Filter>
     </ClCompile>
@@ -1505,6 +1502,12 @@
     </ClCompile>
     <ClCompile Include="..\..\OscPack\ip\win32\UdpSocket.cpp">
       <Filter>Libs\OscPack\ip\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\SerialOscController.cpp">
+      <Filter>Source\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MonomeDevice.cpp">
+      <Filter>Source\Control</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2834,9 +2837,6 @@
     <ClInclude Include="..\..\Source\Wavetable.h">
       <Filter>Source\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\StandaloneApplicationWindow.h">
-      <Filter>Source\GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\juce_audio_plugin_client.h">
       <Filter>Libs\Juce Modules\juce_audio_plugin_client</Filter>
     </ClInclude>
@@ -2935,6 +2935,12 @@
     </ClInclude>
     <ClInclude Include="..\..\OscPack\ip\UdpSocket.h">
       <Filter>Libs\OscPack\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\SerialOscController.h">
+      <Filter>Source\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MonomeDevice.h">
+      <Filter>Source\Control</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
