@@ -29,7 +29,7 @@ class ApplicationController
 	: private Timer
 {
 public:
-	ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<ApplicationView*()> viewFetch);
+	ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<Array<ApplicationView*>()> viewFetch);
 	~ApplicationController();
 
 	void beginUITimer(void) { this->startTimer(20); }
@@ -45,7 +45,6 @@ public:
 	void updateParameterModelAndUI(ParameterID parameter, var value);
 
 	AudioFormatManager* getAudioFormatManager(void);
-	ChangeListener* getWaveformChangeListener(void);
 
 	const StepSequencerData* getSequencerData(void) const;
 	bool sequencerIsPlaying(void) const { return isPlaying; }
@@ -76,7 +75,7 @@ private:
 
 private:
 	std::function<ApplicationModel*()> getModel;
-	std::function<ApplicationView*()> getView;
+	std::function<Array<ApplicationView*>()> getViews;
 	double bpm;
 	bool isPlaying;
 	double playbackPosition;

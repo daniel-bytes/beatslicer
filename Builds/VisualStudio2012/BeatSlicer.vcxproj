@@ -68,8 +68,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;c:\SDKs\vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2012_78A501F=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\JuceLibraryCode;c:\SDKs\vstsdk2.4;..\..\OscPack;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2012_78A501F=1;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader />
@@ -191,9 +191,17 @@
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\utility\juce_PluginUtilities.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_plugin_client\VST\juce_VST_Wrapper.cpp" />
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_utils\juce_audio_utils.cpp" />
+    <ClCompile Include="..\..\OscPack\ip\IpEndpointName.cpp" />
+    <ClCompile Include="..\..\OscPack\ip\win32\NetworkingUtils.cpp" />
+    <ClCompile Include="..\..\OscPack\ip\win32\UdpSocket.cpp" />
+    <ClCompile Include="..\..\OscPack\osc\OscOutboundPacketStream.cpp" />
+    <ClCompile Include="..\..\OscPack\osc\OscPrintReceivedElements.cpp" />
+    <ClCompile Include="..\..\OscPack\osc\OscReceivedElements.cpp" />
+    <ClCompile Include="..\..\OscPack\osc\OscTypes.cpp" />
     <ClCompile Include="..\..\Source\ApplicationController.cpp" />
     <ClCompile Include="..\..\Source\AudioEngine.cpp" />
     <ClCompile Include="..\..\Source\ClockPhasor.cpp" />
+    <ClCompile Include="..\..\Source\MonomeControl.cpp" />
     <ClCompile Include="..\..\Source\ParameterID.cpp" />
     <ClCompile Include="..\..\Source\Sampler.cpp" />
     <ClCompile Include="..\..\Source\Phasor.cpp" />
@@ -1295,11 +1303,25 @@
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_utils\gui\juce_AudioThumbnailBase.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_utils\gui\juce_AudioThumbnailCache.h" />
     <ClInclude Include="..\..\JuceLibraryCode\modules\juce_audio_utils\juce_audio_utils.h" />
+    <ClInclude Include="..\..\OscPack\ip\IpEndpointName.h" />
+    <ClInclude Include="..\..\OscPack\ip\NetworkingUtils.h" />
+    <ClInclude Include="..\..\OscPack\ip\PacketListener.h" />
+    <ClInclude Include="..\..\OscPack\ip\TimerListener.h" />
+    <ClInclude Include="..\..\OscPack\ip\UdpSocket.h" />
+    <ClInclude Include="..\..\OscPack\osc\MessageMappingOscPacketListener.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscException.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscHostEndianness.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscOutboundPacketStream.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscPacketListener.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscPrintReceivedElements.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscReceivedElements.h" />
+    <ClInclude Include="..\..\OscPack\osc\OscTypes.h" />
     <ClInclude Include="..\..\Source\ApplicationController.h" />
     <ClInclude Include="..\..\Source\ApplicationModel.h" />
     <ClInclude Include="..\..\Source\ApplicationView.h" />
     <ClInclude Include="..\..\Source\AudioEngine.h" />
     <ClInclude Include="..\..\Source\ClockPhasor.h" />
+    <ClInclude Include="..\..\Source\MonomeControl.h" />
     <ClInclude Include="..\..\Source\ParameterID.h" />
     <ClInclude Include="..\..\Source\Sampler.h" />
     <ClInclude Include="..\..\Source\Parameter.h" />

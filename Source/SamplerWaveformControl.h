@@ -19,7 +19,7 @@ public:
 	void setNumSlices(int numSlices);
 	void setCurrentSlice(int slice);
 
-	void initialize(ApplicationController *controller);
+	void initialize(ApplicationController *controller, ChangeListener *waveformChangeListener);
 
 	void setSource(FileInputSource *fileSource);
 

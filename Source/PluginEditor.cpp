@@ -143,7 +143,7 @@ void BeatSlicerAudioProcessorEditor::initialize(ApplicationController *controlle
 	this->controller = controller;
 
 	if (this->controller != nullptr) {
-		waveform->initialize(this->controller);
+		waveform->initialize(this->controller, this);
 		sequencer->initialize(this->controller);
 
 		auto parameters = controller->getAllParameters();

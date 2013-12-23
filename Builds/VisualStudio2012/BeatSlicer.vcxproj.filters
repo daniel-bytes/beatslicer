@@ -307,6 +307,21 @@
     <Filter Include="Resources">
       <UniqueIdentifier>{830ccb7f-d1c9-4ccc-a7c7-07d7dd3afaca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Control">
+      <UniqueIdentifier>{bb09fdd7-0c38-4a49-9e29-308dee19206a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\OscPack">
+      <UniqueIdentifier>{3d34b45c-059c-42fa-9897-f4c659bd2eb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\OscPack\osc">
+      <UniqueIdentifier>{e916e149-f0c0-4815-8c0d-fe46272b444e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\OscPack\ip">
+      <UniqueIdentifier>{8c6df59b-4d75-475c-8fe7-c94fe4d30d7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Libs\OscPack\ip\win32">
+      <UniqueIdentifier>{5216ddba-5689-4244-8fcb-2499b1ce7a90}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\JuceLibraryCode\modules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
@@ -1466,6 +1481,30 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\StepSequencerControl.cpp">
       <Filter>Source\GUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\MonomeControl.cpp">
+      <Filter>Source\Control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\osc\OscOutboundPacketStream.cpp">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\osc\OscPrintReceivedElements.cpp">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\osc\OscReceivedElements.cpp">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\osc\OscTypes.cpp">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\ip\IpEndpointName.cpp">
+      <Filter>Libs\OscPack\ip</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\ip\win32\NetworkingUtils.cpp">
+      <Filter>Libs\OscPack\ip\win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\OscPack\ip\win32\UdpSocket.cpp">
+      <Filter>Libs\OscPack\ip\win32</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -2854,6 +2893,48 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\StepSequencerData.h">
       <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\MonomeControl.h">
+      <Filter>Source\Control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\MessageMappingOscPacketListener.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscException.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscHostEndianness.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscOutboundPacketStream.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscPacketListener.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscPrintReceivedElements.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscReceivedElements.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\osc\OscTypes.h">
+      <Filter>Libs\OscPack\osc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\ip\IpEndpointName.h">
+      <Filter>Libs\OscPack\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\ip\NetworkingUtils.h">
+      <Filter>Libs\OscPack\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\ip\PacketListener.h">
+      <Filter>Libs\OscPack\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\ip\TimerListener.h">
+      <Filter>Libs\OscPack\ip</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\OscPack\ip\UdpSocket.h">
+      <Filter>Libs\OscPack\ip</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

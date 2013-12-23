@@ -32,7 +32,7 @@ void SamplerWaveformControl::setSource(FileInputSource *fileSource)
 	this->repaint();
 }
 
-void SamplerWaveformControl::initialize(ApplicationController *controller)
+void SamplerWaveformControl::initialize(ApplicationController *controller, ChangeListener *waveformChangeListener)
 {
 	this->controller = controller;
 
@@ -46,10 +46,8 @@ void SamplerWaveformControl::initialize(ApplicationController *controller)
 		waveformCache = new AudioThumbnailCache(1);
 		waveform = new AudioThumbnail(1, *formatManager, *waveformCache);
 
-		auto waveformListener = controller->getWaveformChangeListener();
-
-		if (waveformListener != nullptr) {
-			waveform->addChangeListener(waveformListener);
+		if (waveformChangeListener != nullptr) {
+			waveform->addChangeListener(waveformChangeListener);
 		}
 	}
 }

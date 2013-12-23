@@ -76,7 +76,7 @@ private:
 	ScopedPointer<AudioEngine> model;
 
 	ApplicationModel* getModel(void);
-	ApplicationView* getView(void);
+	Array<ApplicationView*> getViews(void);
 
 private:
     //==============================================================================

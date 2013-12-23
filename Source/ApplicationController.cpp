@@ -16,9 +16,9 @@
 #define XMLATTRIBUTE_TYPE "type"
 #define XMLATTRIBUTE_VALUE "value"
 
-ApplicationController::ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<ApplicationView*()> viewFetch)
+ApplicationController::ApplicationController(std::function<ApplicationModel*()> modelFetch, std::function<Array<ApplicationView*>()> viewFetch)
 	: getModel(modelFetch), 
-	  getView(viewFetch), 
+	  getViews(viewFetch), 
 	  isPlaying(false), 
 	  bpm(120.0),
 	  playbackPosition(0), 
@@ -59,18 +59,6 @@ AudioFormatManager* ApplicationController::getAudioFormatManager(void)
 	}
 
 	return model->getAudioFormatManager();
-}
-
-
-ChangeListener* ApplicationController::getWaveformChangeListener(void)
-{
-	auto view = getView();
-
-	if (view == nullptr) {
-		return nullptr;
-	}
-
-	return (ChangeListener*)view;
 }
 
 const StepSequencerData* ApplicationController::getSequencerData(void) const
@@ -165,9 +153,9 @@ void ApplicationController::deserializeParameters(XmlElement *xml)
 
 void ApplicationController::updateParameterUI(ParameterID parameter, var value)
 {
-	auto view = getView();
+	auto views = getViews();
 
-	if (view != nullptr) {
+	for (auto view : views) {
 		view->setParameterValue(parameter, value);
 	}
 }
@@ -190,9 +178,8 @@ void ApplicationController::updateParameterModelAndUI(ParameterID parameter, var
 void ApplicationController::timerCallback()
 {
 	auto model = getModel();
-	auto view = getView();
 
-	if (model == nullptr || view == nullptr) {
+	if (model == nullptr) {
 		return;
 	}
 

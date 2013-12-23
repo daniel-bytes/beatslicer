@@ -20,7 +20,7 @@ BeatSlicerAudioProcessor::BeatSlicerAudioProcessor()
 
 	controller = new ApplicationController(
 							std::bind(&BeatSlicerAudioProcessor::getModel, this),
-							std::bind(&BeatSlicerAudioProcessor::getView, this));
+							std::bind(&BeatSlicerAudioProcessor::getViews, this));
 }
 
 BeatSlicerAudioProcessor::~BeatSlicerAudioProcessor()
@@ -193,15 +193,20 @@ ApplicationModel* BeatSlicerAudioProcessor::getModel(void)
 	return this->model;
 }
 
-ApplicationView* BeatSlicerAudioProcessor::getView(void)
+Array<ApplicationView*> BeatSlicerAudioProcessor::getViews(void)
 {
+	Array<ApplicationView*> views;
+
 	auto editor = this->getActiveEditor();
 
-	if (editor == nullptr) {
-		return nullptr;
+	if (editor != nullptr) {
+		auto view = dynamic_cast<ApplicationView*>(editor);
+		if (view != nullptr) {
+			views.add(view);
+		}
 	}
 
-	return dynamic_cast<ApplicationView*>(editor);
+	return views;
 }
 
 //==============================================================================
