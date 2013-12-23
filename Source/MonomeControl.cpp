@@ -4,10 +4,12 @@
 #include "osc/OscOutboundPacketStream.h"
 #include "ip/UdpSocket.h"
 
+#define SERIALOSC_CONTROLLER_PORT 12003
+
 MonomeControl::MonomeControl(void)
 	: serialosc(nullptr)
 {
-	serialosc = new SerialOscController("beatslicer");
+	serialosc = new SerialOscController("beatslicer", SERIALOSC_CONTROLLER_PORT);
 	serialosc->start(this);
 }
 

@@ -4,15 +4,14 @@
 
 #define SERIALOSC_ADDRESS "127.0.0.1"
 #define SERIALOSC_PORT 12002
-#define SERIALOSC_CONTROLLER_ADDRESS "127.0.0.1"
-#define SERIALOSC_CONTROLLER_PORT 12003
 #define OSC_BUFFER_SIZE 1024
 
-SerialOscController::SerialOscController(String devicePrefix)
+SerialOscController::SerialOscController(String devicePrefix, int defaultPort)
 	: socket(nullptr), 
 	  listener(nullptr), 
 	  Thread("SerialOscControllerThread"),
-	  devicePrefix(devicePrefix)
+	  devicePrefix(devicePrefix),
+	  listenPort(defaultPort)
 {
 }
 
@@ -41,13 +40,14 @@ void SerialOscController::start(Listener *listener)
 	}
 	
 	for (int i = 0; i < 1000; i++) {
-		listenPort = SERIALOSC_CONTROLLER_PORT + i;
+		int tempPort = listenPort + i;
 
 		try {
 			socket = new UdpListeningReceiveSocket(
-					IpEndpointName( IpEndpointName::ANY_ADDRESS, listenPort ),
+					IpEndpointName( IpEndpointName::ANY_ADDRESS, tempPort ),
 					this);
 
+			listenPort = tempPort;
 			break;
 		}
 		catch(std::runtime_error) {
@@ -166,7 +166,7 @@ void SerialOscController::sendDeviceQueryMessage(void)
     
     p << osc::BeginBundleImmediate
         << osc::BeginMessage( "/serialosc/list" )
-			<< SERIALOSC_CONTROLLER_ADDRESS
+			<< SERIALOSC_ADDRESS
 			<< listenPort
             << osc::EndMessage
         << osc::EndBundle;
@@ -182,7 +182,7 @@ void SerialOscController::sendDeviceNotifyMessage(void)
     
     p << osc::BeginBundleImmediate
         << osc::BeginMessage( "/serialosc/notify" )
-			<< SERIALOSC_CONTROLLER_ADDRESS
+			<< SERIALOSC_ADDRESS
 			<< listenPort
             << osc::EndMessage
         << osc::EndBundle;

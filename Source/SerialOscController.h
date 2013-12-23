@@ -22,7 +22,7 @@ public:
 	};
 
 public:
-	SerialOscController(String devicePrefix);
+	SerialOscController(String devicePrefix, int defaultPort);
 	virtual ~SerialOscController(void);
 
 	void start(Listener *listener);

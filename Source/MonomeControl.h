@@ -5,6 +5,7 @@
 #include "ApplicationView.h"
 #include "SerialOscController.h"
 
+
 class UdpListeningReceiveSocket;
 class ApplicationController;
 
